@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --midnight: #04152D;
+  --electric: #0866FF;
+  --bright-blue: #21A3FF;
+  --ice-blue: #DCEEFF;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+body {
+  @apply bg-soft text-graphite font-body antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-display;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 bg-electric text-white font-display font-semibold uppercase tracking-wider rounded-sm transition-all duration-300 hover:bg-bright-blue hover:shadow-lg hover:shadow-electric/30 focus:outline-none focus:ring-2 focus:ring-electric focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white text-white font-display font-semibold uppercase tracking-wider rounded-sm transition-all duration-300 hover:bg-white hover:text-midnight focus:outline-none focus:ring-2 focus:ring-white;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-electric text-electric font-display font-semibold uppercase tracking-wider rounded-sm transition-all duration-300 hover:bg-electric hover:text-white;
+  }
+
+  .section-padding {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .glass-nav {
+    @apply bg-midnight/80 backdrop-blur-xl border-b border-white/10;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-bright-blue to-electric bg-clip-text text-transparent;
+  }
+
+  .card-premium {
+    @apply bg-white rounded-lg shadow-xl shadow-midnight/5 border border-ice-blue/50 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-electric/10 hover:-translate-y-1;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-white border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-electric focus:border-transparent transition-all;
+  }
+
+  .label-field {
+    @apply block text-sm font-medium text-graphite mb-1;
+  }
+}
+
+@layer utilities {
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .road-line {
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 20px,
+      rgba(8, 102, 255, 0.3) 20px,
+      rgba(8, 102, 255, 0.3) 40px
+    );
+    height: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
