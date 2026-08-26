@@ -72,8 +72,7 @@ Use `.env.example` as a template. **Required for production:**
 | `NEXT_PUBLIC_API_URL` | `https://yourdomain.com/api` |
 | `NEXT_PUBLIC_SITE_URL` | `https://yourdomain.com` |
 | `NEXT_PUBLIC_UPLOADS_URL` | `https://yourdomain.com` |
-| `TWILIO_*` | Twilio Verify credentials (SMS on `/apply`) |
-| `SMTP_*` | Email notifications for new applications |
+| `SMTP_*` | Email OTP verification on `/apply` + application notifications |
 
 **Optional:** `INTERNAL_API_URL=http://127.0.0.1:5000` — proxies `/api` through Next.js when only port 3000 is public.
 

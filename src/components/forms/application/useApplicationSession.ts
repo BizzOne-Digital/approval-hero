@@ -55,6 +55,7 @@ export function useApplicationSession() {
       phone: session.phone as string,
       preferredContactMethod: session.preferredContactMethod as string,
       bestTimeToContact: session.bestTimeToContact as string,
+      emailVerified: session.emailVerified as boolean,
       phoneVerified: session.phoneVerified as boolean,
       status: session.status as string,
       referenceNumber: session.referenceNumber as string,
@@ -118,7 +119,7 @@ export function useApplicationSession() {
 
   const sendOtp = useCallback(async () => {
     if (!token) throw new Error('No session');
-    trackApplicationEvent('phone_verification_requested');
+    trackApplicationEvent('email_verification_requested');
     return applicationApi.sendOtp(token);
   }, [token]);
 
@@ -126,7 +127,7 @@ export function useApplicationSession() {
     if (!token) throw new Error('No session');
     const session = await applicationApi.verifyOtp(token, code);
     applySession(session as Record<string, unknown>);
-    trackApplicationEvent('phone_verified');
+    trackApplicationEvent('email_verified');
     return session;
   }, [token, applySession]);
 

@@ -8,7 +8,7 @@ import { ChevronLeft, Trash2 } from 'lucide-react';
 import { adminApi } from '@/lib/api';
 
 const STATUSES = [
-  'Started', 'Draft', 'Contact Pending', 'OTP Sent', 'Phone Verified', 'Submitted',
+  'Started', 'Draft', 'Contact Pending', 'OTP Sent', 'Phone Verified', 'Email Verified', 'Submitted',
   'Under Review', 'Contacted', 'Documents Requested', 'Partner Matched',
   'Appointment Booked', 'Approved', 'Declined', 'Closed', 'Spam',
 ];
@@ -102,7 +102,7 @@ export default function AdminApplicationDetailPage() {
         {tab === 'Overview' && (
           <dl className="grid sm:grid-cols-2 gap-4 text-sm">
             <Item label="Status" value={String(app.status)} />
-            <Item label="Phone Verified" value={app.phoneVerified ? 'Yes' : 'No'} />
+            <Item label="Email Verified" value={(app.emailVerified || app.phoneVerified) ? 'Yes' : 'No'} />
             <Item label="Vehicle Type" value={String(app.vehicleType || '—')} />
             <Item label="Credit" value={String(app.creditCategory || '—')} />
             <Item label="Employment" value={String(app.employmentStatus || '—')} />

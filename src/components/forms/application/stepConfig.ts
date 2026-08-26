@@ -15,7 +15,7 @@ export type StepId =
   | 'address'
   | 'dateOfBirth'
   | 'contactDetails'
-  | 'phoneVerification'
+  | 'emailVerification'
   | 'reviewConsent';
 
 export interface StepMeta {
@@ -63,6 +63,7 @@ export interface ApplicationState {
   phone?: string;
   preferredContactMethod?: string;
   bestTimeToContact?: string;
+  emailVerified?: boolean;
   phoneVerified?: boolean;
   status?: string;
   referenceNumber?: string;
@@ -85,7 +86,7 @@ const BASE_STEPS: Omit<StepMeta, 'question'>[] = [
   { id: 'address', category: 'Address' },
   { id: 'dateOfBirth', category: 'Personal' },
   { id: 'contactDetails', category: 'Contact' },
-  { id: 'phoneVerification', category: 'Verification' },
+  { id: 'emailVerification', category: 'Verification' },
   { id: 'reviewConsent', category: 'Review' },
 ];
 
@@ -106,7 +107,7 @@ const QUESTIONS: Record<StepId, string> = {
   address: 'What is your current address?',
   dateOfBirth: 'What is your date of birth?',
   contactDetails: 'How can we reach you?',
-  phoneVerification: 'Verify your phone number',
+  emailVerification: 'Verify your email address',
   reviewConsent: 'Review and submit your application',
 };
 

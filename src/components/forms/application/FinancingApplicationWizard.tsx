@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
-  Shield, ChevronLeft, ChevronRight, Loader2, Check, Lock, Phone,
+  Shield, ChevronLeft, ChevronRight, Loader2, Check, Lock, Mail,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { HeaderLogoLink } from '@/components/brand/ApprovalHeroLogo';
@@ -559,7 +559,7 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
             <Field label="Phone Number" error={errors.phone}>
               <input className={inputClass} value={cd.phone || ''} onChange={(e) => updateLocal({ phone: formatPhone(e.target.value) })} />
             </Field>
-            <p className="text-sm text-gray-500 flex items-center gap-2"><Phone className="w-4 h-4" /> A verification code will be sent to your phone.</p>
+            <p className="text-sm text-gray-500 flex items-center gap-2"><Mail className="w-4 h-4" /> A verification code will be sent to your email.</p>
             <Field label="Preferred Contact Method">
               <div className="flex gap-3">
                 {(cfg.contactMethods || []).map((m) => (
@@ -581,9 +581,15 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
         );
       }
 
-      case 'phoneVerification':
+      case 'emailVerification': {
+        const maskedEmail = merged.email
+          ? merged.email.replace(/(.{1})(.*)(@.*)/, (_, a, mid, domain) => a + '*'.repeat(Math.min(mid.length, 6)) + domain)
+          : 'your email';
         return (
           <div className="space-y-6">
+            <p className="text-sm text-gray-600">
+              We will send a 6-digit code to <strong>{maskedEmail}</strong>.
+            </p>
             {!otpSent ? (
               <button
                 type="button"
@@ -605,7 +611,7 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
                 }}
                 className="btn-primary w-full"
               >
-                Send Verification Code
+                Send Code to Email
               </button>
             ) : (
               <>
@@ -661,6 +667,7 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
             )}
           </div>
         );
+      }
 
       case 'reviewConsent': {
         const cw = cfg.consentWording || {};
@@ -707,9 +714,9 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
               type="button"
               disabled={saving || !consents.accuracy || !consents.contact || !consents.privacy || !consents.partnerShare}
               onClick={async () => {
-                if (!merged.phoneVerified) {
+                if (!merged.emailVerified && !merged.phoneVerified) {
                   setOtpError('');
-                  goToStep('phoneVerification');
+                  goToStep('emailVerification');
                   return;
                 }
                 setSaving(true);

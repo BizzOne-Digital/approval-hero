@@ -21,6 +21,38 @@ function getTransporter(): nodemailer.Transporter | null {
   return transporter;
 }
 
+export async function sendOtpEmail(to: string, code: string): Promise<boolean> {
+  const transport = getTransporter();
+  if (!transport) {
+    logger.warn('SMTP not configured, cannot send OTP email');
+    return false;
+  }
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto;">
+      <h2 style="color: #0866FF;">Approval Hero</h2>
+      <p>Your verification code is:</p>
+      <p style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #0a1628;">${code}</p>
+      <p style="color: #666; font-size: 14px;">This code expires in 10 minutes. If you did not request this, you can ignore this email.</p>
+    </div>
+  `;
+
+  try {
+    await transport.sendMail({
+      from: env.SMTP_FROM || env.SMTP_USER,
+      to,
+      subject: `${code} is your Approval Hero verification code`,
+      html,
+      text: `Your Approval Hero verification code is ${code}. It expires in 10 minutes.`,
+    });
+    logger.info('OTP email sent');
+    return true;
+  } catch (error) {
+    logger.error('Failed to send OTP email:', error);
+    return false;
+  }
+}
+
 export async function sendApplicationNotification(payload: {
   referenceNumber: string;
   name: string;

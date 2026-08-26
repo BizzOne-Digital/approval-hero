@@ -23,9 +23,6 @@ const envSchema = z.object({
   NOTIFICATION_EMAIL: z.string().optional(),
   MAX_UPLOAD_SIZE_MB: z.string().default('8'),
   UPLOAD_DIR: z.string().default('server/uploads'),
-  TWILIO_ACCOUNT_SID: z.string().optional(),
-  TWILIO_AUTH_TOKEN: z.string().optional(),
-  TWILIO_VERIFY_SERVICE_SID: z.string().optional(),
   INTERNAL_API_URL: z.string().url().optional(),
 });
 
@@ -58,11 +55,8 @@ if (isProd) {
   if (data.COOKIE_SECURE !== 'true') {
     console.warn('[deploy] COOKIE_SECURE should be "true" when serving over HTTPS.');
   }
-  if (!data.TWILIO_ACCOUNT_SID || !data.TWILIO_VERIFY_SERVICE_SID) {
-    console.warn('[deploy] Twilio Verify is not configured — /apply phone verification will fail in production.');
-  }
   if (!data.SMTP_HOST || !data.SMTP_USER) {
-    console.warn('[deploy] SMTP is not configured — application email notifications will be skipped.');
+    console.warn('[deploy] SMTP is not configured — email OTP verification and notifications will fail.');
   }
 }
 

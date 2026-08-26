@@ -46,8 +46,7 @@ if (!env) {
     if (insecure(env.JWT_SECRET)) errors.push('JWT_SECRET must be a strong random value in production');
     if (insecure(env.ENCRYPTION_KEY)) errors.push('ENCRYPTION_KEY must be set in production (32+ random chars)');
     if (env.COOKIE_SECURE !== 'true') warnings.push('Set COOKIE_SECURE=true for HTTPS');
-    if (!env.TWILIO_VERIFY_SERVICE_SID) warnings.push('TWILIO_VERIFY_SERVICE_SID not set — SMS verification disabled');
-    if (!env.SMTP_HOST) warnings.push('SMTP_HOST not set — email notifications disabled');
+    if (!env.SMTP_HOST) warnings.push('SMTP_HOST not set — email OTP and notifications disabled');
     if (env.FRONTEND_URL?.startsWith('http://')) warnings.push('FRONTEND_URL should use https:// in production');
     if (!fs.existsSync(path.join(root, 'server/dist/server.js'))) {
       warnings.push('API not built — run npm run build first');

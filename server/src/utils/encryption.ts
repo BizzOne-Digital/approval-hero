@@ -32,6 +32,11 @@ export function hashForSearch(value: string): string {
   return crypto.createHmac('sha256', getKey()).update(normalized).digest('hex');
 }
 
+export function hashEmailForSearch(email: string): string {
+  const normalized = email.toLowerCase().trim();
+  return crypto.createHmac('sha256', getKey()).update(normalized).digest('hex');
+}
+
 export function hashToken(token: string): string {
   return crypto.createHash('sha256').update(token).digest('hex');
 }

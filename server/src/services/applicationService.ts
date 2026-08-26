@@ -38,6 +38,7 @@ export async function startApplicationSession(meta: {
     currentStep: 'vehicleType',
     completedSteps: [],
     phoneVerified: false,
+    emailVerified: false,
     consentRecords: [],
     internalNotes: [],
     lastActivityAt: new Date(),
@@ -80,6 +81,7 @@ export function sanitizeApplicationForClient(app: IApplication, settings?: Await
     completedSteps: app.completedSteps,
     referenceNumber: app.referenceNumber,
     phoneVerified: app.phoneVerified,
+    emailVerified: app.emailVerified,
     vehicleType: app.vehicleType,
     knowsSpecificVehicle: app.knowsSpecificVehicle,
     preferredVehicle: app.preferredVehicle,
@@ -235,6 +237,7 @@ export async function saveApplicationStep(token: string, stepId: string, data: R
       app.preferredContactMethod = String(data.preferredContactMethod || 'phone');
       app.bestTimeToContact = String(data.bestTimeToContact || '');
       app.phoneVerified = false;
+      app.emailVerified = false;
       break;
     }
     default:
@@ -261,17 +264,17 @@ export async function saveApplicationStep(token: string, stepId: string, data: R
 
 export async function requestOtp(token: string, ipAddress?: string) {
   const app = await findApplicationByToken(token);
-  if (!app || !app.encryptedPhone) throw new Error('Phone number required before verification');
-  const phone = decryptField(app.encryptedPhone);
-  const result = await sendApplicationOtp({ applicationId: app.id, phone, ipAddress });
+  if (!app || !app.encryptedEmail) throw new Error('Email address required before verification');
+  const email = decryptField(app.encryptedEmail);
+  const result = await sendApplicationOtp({ applicationId: app.id, email, ipAddress });
   if (result.sent) {
     app.status = 'OTP Sent';
     app.lastActivityAt = new Date();
     await app.save();
     await ApplicationActivity.create({
       applicationId: app._id,
-      action: 'phone_verification_requested',
-      description: 'OTP sent',
+      action: 'email_verification_requested',
+      description: 'Verification code sent by email',
     });
   }
   return result;
@@ -279,19 +282,19 @@ export async function requestOtp(token: string, ipAddress?: string) {
 
 export async function confirmOtp(token: string, code: string) {
   const app = await findApplicationByToken(token);
-  if (!app || !app.encryptedPhone) throw new Error('Invalid session');
-  const phone = decryptField(app.encryptedPhone);
-  const verified = await verifyApplicationOtp({ applicationId: app.id, phone, code });
+  if (!app || !app.encryptedEmail) throw new Error('Invalid session');
+  const email = decryptField(app.encryptedEmail);
+  const verified = await verifyApplicationOtp({ applicationId: app.id, email, code });
   if (!verified) throw new Error('Invalid or expired verification code');
-  app.phoneVerified = true;
-  app.phoneVerifiedAt = new Date();
-  app.status = 'Phone Verified';
+  app.emailVerified = true;
+  app.emailVerifiedAt = new Date();
+  app.status = 'Email Verified';
   app.lastActivityAt = new Date();
   await app.save();
   await ApplicationActivity.create({
     applicationId: app._id,
-    action: 'phone_verified',
-    description: 'Phone verified successfully',
+    action: 'email_verified',
+    description: 'Email verified successfully',
   });
   return app;
 }
@@ -306,7 +309,7 @@ export async function submitApplication(token: string, consents: {
   const app = await findApplicationByToken(token);
   if (!app) throw new Error('Session not found');
   if (app.status === 'Submitted') throw new Error('Application already submitted');
-  if (!app.phoneVerified) throw new Error('Phone verification required');
+  if (!app.emailVerified && !app.phoneVerified) throw new Error('Email verification required');
   if (!consents.accuracy || !consents.contact || !consents.privacy || !consents.partnerShare) {
     throw new Error('All required consents must be accepted');
   }

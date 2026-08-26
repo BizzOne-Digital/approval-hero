@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { OtpAttempt } from '../models/OtpAttempt';
-import { hashForSearch } from '../utils/encryption';
+import { hashEmailForSearch } from '../utils/encryption';
+import { sendOtpEmail } from './emailService';
 import { logger } from '../utils/logger';
 
 const OTP_EXPIRY_MS = 10 * 60 * 1000;
@@ -17,14 +18,14 @@ function generateOtp(): string {
 
 export async function sendApplicationOtp(params: {
   applicationId: string;
-  phone: string;
+  email: string;
   ipAddress?: string;
 }): Promise<{ sent: boolean; mockCode?: string; cooldownSeconds?: number }> {
-  const phoneHash = hashForSearch(params.phone);
+  const emailHash = hashEmailForSearch(params.email);
 
   const recent = await OtpAttempt.findOne({
     applicationId: params.applicationId,
-    phoneSearchHash: phoneHash,
+    recipientSearchHash: emailHash,
     verified: false,
     createdAt: { $gte: new Date(Date.now() - RESEND_COOLDOWN_MS) },
   }).sort({ createdAt: -1 });
@@ -41,7 +42,7 @@ export async function sendApplicationOtp(params: {
 
   await OtpAttempt.create({
     applicationId: params.applicationId,
-    phoneSearchHash: phoneHash,
+    recipientSearchHash: emailHash,
     otpHash,
     expiresAt,
     attempts: 0,
@@ -49,49 +50,29 @@ export async function sendApplicationOtp(params: {
     ipAddress: params.ipAddress,
   });
 
-  const twilioSid = process.env.TWILIO_ACCOUNT_SID;
-  const twilioToken = process.env.TWILIO_AUTH_TOKEN;
-  const twilioVerifySid = process.env.TWILIO_VERIFY_SERVICE_SID;
+  const emailed = await sendOtpEmail(params.email, code);
 
-  if (twilioSid && twilioToken && twilioVerifySid) {
-    try {
-      const auth = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
-      const res = await fetch(`https://verify.twilio.com/v2/Services/${twilioVerifySid}/Verifications`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Basic ${auth}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ To: params.phone, Channel: 'sms' }),
-      });
-      if (!res.ok) {
-        logger.error('Twilio Verify send failed', await res.text());
-        throw new Error('SMS provider error');
-      }
-      return { sent: true };
-    } catch (err) {
-      logger.error('Twilio OTP send error', err);
-      throw new Error('Unable to send verification code');
-    }
+  if (emailed) {
+    return { sent: true };
   }
 
   if (process.env.NODE_ENV === 'production') {
-    throw new Error('SMS verification is not configured');
+    throw new Error('Email verification is not configured');
   }
 
-  logger.info(`[DEV OTP] Application ${params.applicationId}: verification code generated (mock provider)`);
+  logger.info(`[DEV OTP] Application ${params.applicationId}: email verification code generated (mock provider)`);
   return { sent: true, mockCode: code };
 }
 
 export async function verifyApplicationOtp(params: {
   applicationId: string;
-  phone: string;
+  email: string;
   code: string;
 }): Promise<boolean> {
-  const phoneHash = hashForSearch(params.phone);
+  const emailHash = hashEmailForSearch(params.email);
   const attempt = await OtpAttempt.findOne({
     applicationId: params.applicationId,
-    phoneSearchHash: phoneHash,
+    recipientSearchHash: emailHash,
     verified: false,
     expiresAt: { $gt: new Date() },
   }).sort({ createdAt: -1 });
@@ -101,29 +82,6 @@ export async function verifyApplicationOtp(params: {
 
   attempt.attempts += 1;
   await attempt.save();
-
-  const twilioSid = process.env.TWILIO_ACCOUNT_SID;
-  const twilioToken = process.env.TWILIO_AUTH_TOKEN;
-  const twilioVerifySid = process.env.TWILIO_VERIFY_SERVICE_SID;
-
-  if (twilioSid && twilioToken && twilioVerifySid) {
-    const auth = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
-    const res = await fetch(`https://verify.twilio.com/v2/Services/${twilioVerifySid}/VerificationCheck`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${auth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({ To: params.phone, Code: params.code }),
-    });
-    const data = await res.json() as { status?: string };
-    if (data.status === 'approved') {
-      attempt.verified = true;
-      await attempt.save();
-      return true;
-    }
-    return false;
-  }
 
   if (hashOtp(params.code) === attempt.otpHash) {
     attempt.verified = true;

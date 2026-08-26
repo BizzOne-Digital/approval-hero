@@ -7,7 +7,7 @@ import { Download, Search, Eye } from 'lucide-react';
 import { adminApi } from '@/lib/api';
 
 const STATUSES = [
-  'Started', 'Draft', 'Contact Pending', 'OTP Sent', 'Phone Verified', 'Submitted',
+  'Started', 'Draft', 'Contact Pending', 'OTP Sent', 'Phone Verified', 'Email Verified', 'Submitted',
   'Under Review', 'Contacted', 'Documents Requested', 'Partner Matched',
   'Appointment Booked', 'Approved', 'Declined', 'Closed', 'Spam',
 ];
@@ -25,6 +25,7 @@ interface AppRow {
   monthlyIncomeRange?: string;
   purchaseTimeline?: string;
   phoneVerified: boolean;
+  emailVerified: boolean;
   status: string;
   assignedTo?: string;
   source?: string;
@@ -112,7 +113,7 @@ export default function AdminApplicationsPage() {
                   <td className="p-3 capitalize">{app.vehicleType || '—'}</td>
                   <td className="p-3 text-xs">{app.creditCategory || '—'}</td>
                   <td className="p-3 text-xs">{app.purchaseTimeline || '—'}</td>
-                  <td className="p-3">{app.phoneVerified ? '✓' : '—'}</td>
+                  <td className="p-3">{(app.emailVerified || app.phoneVerified) ? '✓' : '—'}</td>
                   <td className="p-3"><span className="text-xs bg-gray-100 px-2 py-1 rounded">{app.status}</span></td>
                   <td className="p-3 text-gray-500">{new Date(app.createdAt).toLocaleDateString()}</td>
                   <td className="p-3 text-right">

@@ -183,6 +183,7 @@ export async function adminGetApplications(req: AuthRequest, res: Response): Pro
     monthlyIncomeRange: app.monthlyIncomeRange,
     purchaseTimeline: app.purchaseTimeline,
     phoneVerified: app.phoneVerified,
+    emailVerified: app.emailVerified,
     status: app.status,
     assignedTo: app.assignedTo,
     source: app.source,
@@ -280,7 +281,7 @@ export async function adminExportApplications(req: AuthRequest, res: Response): 
   const apps = await Application.find({ isArchived: false }).sort('-createdAt').lean();
   const headers = [
     'Reference', 'First Name', 'Last Name', 'Vehicle Type', 'Credit', 'Employment',
-    'Income', 'Purchase Timeline', 'Status', 'Phone Verified', 'Source', 'Created',
+    'Income', 'Purchase Timeline', 'Status', 'Email Verified', 'Source', 'Created',
   ];
   const rows = apps.map((app) => [
     app.referenceNumber || '',
@@ -292,7 +293,7 @@ export async function adminExportApplications(req: AuthRequest, res: Response): 
     app.monthlyIncomeRange || '',
     app.purchaseTimeline || '',
     app.status,
-    app.phoneVerified ? 'Yes' : 'No',
+    (app.emailVerified || app.phoneVerified) ? 'Yes' : 'No',
     app.source || '',
     app.createdAt ? new Date(app.createdAt).toISOString() : '',
   ]);

@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export const APPLICATION_STATUSES = [
-  'Started', 'Draft', 'Contact Pending', 'OTP Sent', 'Phone Verified', 'Submitted',
+  'Started', 'Draft', 'Contact Pending', 'OTP Sent', 'Phone Verified', 'Email Verified', 'Submitted',
   'Under Review', 'Contacted', 'Documents Requested', 'Partner Matched',
   'Appointment Booked', 'Approved', 'Declined', 'Closed', 'Spam',
 ] as const;
@@ -67,6 +67,8 @@ export interface IApplication extends Document {
   bestTimeToContact?: string;
   phoneVerified: boolean;
   phoneVerifiedAt?: Date;
+  emailVerified: boolean;
+  emailVerifiedAt?: Date;
   consentRecords: IConsentRecord[];
   marketingConsent?: boolean;
   source?: string;
@@ -136,6 +138,8 @@ const ApplicationSchema = new Schema<IApplication>(
     bestTimeToContact: String,
     phoneVerified: { type: Boolean, default: false },
     phoneVerifiedAt: Date,
+    emailVerified: { type: Boolean, default: false },
+    emailVerifiedAt: Date,
     consentRecords: [{
       type: { type: String },
       accepted: Boolean,
