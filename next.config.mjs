@@ -3,6 +3,9 @@ const uploadsUrl = process.env.NEXT_PUBLIC_UPLOADS_URL || 'http://localhost:5000
 const internalApi = process.env.INTERNAL_API_URL;
 
 const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ['mongoose', 'bcrypt'],
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
