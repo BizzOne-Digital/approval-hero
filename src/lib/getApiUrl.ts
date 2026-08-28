@@ -7,9 +7,11 @@ export function getApiBaseUrl(): string {
     return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
   };
 
-  // Explicit public URL (external API host)
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return normalize(process.env.NEXT_PUBLIC_API_URL);
+  // Explicit public URL (external API host) — ignore localhost on Vercel
+  const publicUrl = process.env.NEXT_PUBLIC_API_URL;
+  const isLocalhost = publicUrl && /localhost|127\.0\.0\.1/i.test(publicUrl);
+  if (publicUrl && !(process.env.VERCEL_URL && isLocalhost)) {
+    return normalize(publicUrl);
   }
 
   // Vercel: use built-in Next.js API routes on same domain

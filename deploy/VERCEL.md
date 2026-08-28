@@ -48,13 +48,39 @@ Vercel → **Deployments** → latest → **⋯** → **Redeploy**
 
 ---
 
-## Admin & /apply on Vercel
+## Application (`/apply`) on Vercel
 
-Public pages work with `MONGO_URI` only.
+The apply form now uses **built-in API routes** on Vercel (same as CMS pages).
 
-For **admin login** and **/apply** (forms, OTP), you still need either:
+**Required on Vercel:**
 
-- Deploy Express API to Render **and** set `NEXT_PUBLIC_API_URL` to that URL, **or**
-- Add more env vars on Vercel: `JWT_SECRET`, `ENCRYPTION_KEY`, `SMTP_*`, etc. (future)
+| Name | Value |
+|------|--------|
+| `MONGO_URI` | Your MongoDB Atlas connection string |
 
-For now, fix the public site with `MONGO_URI` + redeploy.
+**Recommended for email verification (OTP) and submission notifications:**
+
+| Name | Value |
+|------|--------|
+| `ENCRYPTION_KEY` | Random 32+ char string (`npm run deploy:secrets`) |
+| `SMTP_HOST` | e.g. `smtp.gmail.com` |
+| `SMTP_PORT` | `587` |
+| `SMTP_USER` | Your email |
+| `SMTP_PASS` | App password |
+| `SMTP_FROM` | `Approval Hero <noreply@approvalhero.ca>` |
+| `NOTIFICATION_EMAIL` | Where new applications are sent |
+
+Without SMTP, the form loads and saves steps, but **email verification will fail** in production until SMTP is configured.
+
+**Test after deploy:**
+
+| URL | Should show |
+|-----|-------------|
+| `https://approval-hero-nb2m.vercel.app/apply` | Application wizard (step 1) |
+| `POST .../api/public/applications/start` | `{ success: true, data: { token } }` |
+
+---
+
+## Admin on Vercel
+
+Admin login still needs `JWT_SECRET` and related vars, or a separate Express host.

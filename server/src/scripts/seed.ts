@@ -30,10 +30,10 @@ const IMAGES = {
   sedan: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1920',
   truck: 'https://images.unsplash.com/photo-1533473359331-30c20e68572a?w=1920',
   interior: 'https://images.unsplash.com/photo-148529157115f-772ac1456bb2?w=1920',
-  keys: 'https://images.unsplash.com/photo-1485463611174-63bad6f4b50b?w=1920',
+  keys: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=1920',
   handshake: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=1920',
   roadTrip: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920',
-  cityDrive: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2001?w=1920',
+  cityDrive: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920',
   happyCustomer: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920',
   office: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920',
   credit: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1920',
@@ -56,21 +56,25 @@ function heroSection(
   subheading: string,
   order: number,
   backgroundUrl: string,
-  ctaLabel = 'Get Pre-Qualified',
-  ctaLink = '/apply',
+  ctaLabel?: string,
+  ctaLink?: string,
   eyebrow?: string,
   body?: string,
   metadata?: Record<string, unknown>,
 ): IPageSection {
+  const isMinimal = metadata?.minimalHero === true;
+  const isInner = metadata?.innerPage === true;
+  const useMarketingDefaults = !isMinimal && !isInner;
+
   return {
     name,
     sectionType: 'hero',
-    eyebrow: eyebrow || 'Vehicle Financing Support',
+    eyebrow: eyebrow || (isMinimal ? undefined : 'Vehicle Financing Support'),
     heading,
     subheading,
     body,
-    ctaLabel,
-    ctaLink,
+    ctaLabel: ctaLabel ?? (useMarketingDefaults ? 'Get Pre-Qualified' : undefined),
+    ctaLink: ctaLink ?? (useMarketingDefaults ? '/apply' : undefined),
     backgroundImage: img(backgroundUrl, heading),
     textAlignment: 'left',
     animationPreset: 'fade-up',
@@ -216,7 +220,6 @@ async function seedSiteSettings(): Promise<void> {
       alternatePhone: '1-888-555-0199',
       address: 'Greater Toronto Area, Ontario, Canada',
       serviceArea: 'Greater Toronto Area and across Ontario',
-      businessHours: 'Mon-Fri: 9:00 AM - 6:00 PM | Sat: 10:00 AM - 4:00 PM | Sun: Closed',
     },
     social: {
       facebook: 'https://facebook.com/approvalhero',
@@ -390,17 +393,17 @@ function buildPages() {
           'How It Works Preview',
           'Three Simple Steps to Get Started',
           [
-            { title: 'Apply Online', description: 'Fill out our secure application in minutes. No obligation and no impact on your credit score for the initial inquiry.' },
+            { title: 'Apply Online', description: 'Fill out our secure application in minutes. No obligation and absolutely free of charge.' },
             { title: 'Review Your Options', description: 'A financing specialist reviews your situation and matches you with programs that fit your needs and budget.' },
-            { title: 'Drive Away', description: 'Once approved, select your vehicle from partner inventory and finalize your financing terms.' },
+            { title: 'Drive Away', description: 'Select your dream vehicle from the list of options that fit your preference and budget.' },
           ],
           3,
         ),
         statsSection('Trust Stats', [
           { title: '15+', description: 'Years Combined Experience' },
           { title: '1,000+', description: 'Customers Assisted' },
-          { title: '50+', description: 'Lending Partners' },
-          { title: '24hr', description: 'Typical Response Time' },
+          { title: '25+', description: 'Lending Partners' },
+          { title: '<12hr', description: 'Typical Response Time' },
         ], 4),
         ctaBanner(
           'Home CTA',
@@ -451,9 +454,9 @@ function buildPages() {
         ),
         statsSection('By the Numbers', [
           { title: '1,000+', description: 'Customers Assisted' },
-          { title: '50+', description: 'Lending Partners' },
+          { title: '25+', description: 'Lending Partners' },
           { title: '15+', description: 'Years Experience' },
-          { title: '24hr', description: 'Typical Response' },
+          { title: '<12hr', description: 'Typical Response' },
         ], 3),
         featuresSection('Our Values', 'What Guides Us Every Day', [
           { title: 'Transparency', description: 'No hidden fees, no pressure tactics. We explain terms in plain language.', icon: 'eye' },
@@ -731,7 +734,7 @@ function buildPages() {
         heroSection('Contact Hero', 'Get In Touch', 'Ready to explore your financing options? We are here to help.', 0, IMAGES.office, 'Call Now', 'tel:4167002656', 'Contact'),
         { name: 'Contact Form', sectionType: 'form-section', heading: 'Apply Online', subheading: 'Complete the form below and a financing specialist will contact you within one business day.', body: 'Fields: name, email, phone, credit situation, vehicle preference, message, consent.', textAlignment: 'center', isVisible: true, order: 1 },
         featuresSection('Contact Info', 'Other Ways to Reach Us', [
-          { title: 'Phone', description: '416-700-2656 — Mon-Fri 9AM-6PM, Sat 10AM-4PM', icon: 'phone' },
+          { title: 'Phone', description: '416-700-2656', icon: 'phone' },
           { title: 'Email', description: 'ak_2123@hotmail.com — We respond within 24 hours', icon: 'mail' },
           { title: 'Service Area', description: 'Greater Toronto Area and all of Ontario', icon: 'map-pin' },
         ], 2),
@@ -746,7 +749,7 @@ function buildPages() {
       seoDescription: 'Approval Hero privacy policy — how we collect, use, and protect your personal information.',
       noIndex: false,
       sections: [
-        heroSection('Privacy Hero', 'Privacy Policy', 'How Approval Hero protects and uses your personal information.', 0, IMAGES.office, undefined, undefined, 'Legal'),
+        heroSection('Privacy Hero', 'Privacy Policy', 'How Approval Hero protects and uses your personal information.', 0, IMAGES.office, undefined, undefined, 'Legal', undefined, { minimalHero: true }),
         contentBlock('Information We Collect', 'Personal Information', 'We collect information you provide directly, including your name, email address, phone number, employment details, housing information, and credit situation when you submit an application or contact form. We may also collect technical data such as IP address, browser type, and pages visited through cookies and analytics tools.', 1),
         contentBlock('How We Use Your Information', 'Purpose of Collection', 'Your information is used to process financing applications, connect you with appropriate lending partners, respond to inquiries, send relevant communications about your application, and improve our services. We do not sell your personal information to third parties.', 2),
         contentBlock('Data Security', 'Protecting Your Data', 'We implement industry-standard security measures including encryption, secure servers, and access controls to protect your personal information. While no system is 100% secure, we take reasonable steps to safeguard your data against unauthorized access, alteration, or disclosure.', 3),
@@ -760,11 +763,11 @@ function buildPages() {
       seoTitle: 'Terms of Service',
       seoDescription: 'Approval Hero terms of service for vehicle financing assistance services in Ontario.',
       sections: [
-        heroSection('Terms Hero', 'Terms of Service', 'Terms governing your use of Approval Hero services and website.', 0, IMAGES.office, undefined, undefined, 'Legal'),
+        heroSection('Terms Hero', 'Terms of Service', 'Terms governing your use of Approval Hero services and website.', 0, IMAGES.office, undefined, undefined, 'Legal', undefined, { minimalHero: true }),
         contentBlock('Service Description', 'What Approval Hero Provides', 'Approval Hero is a vehicle financing assistance service that connects customers with dealer and lending partners. We are not a direct lender, bank, or credit union. We do not make lending decisions, set interest rates, or guarantee financing approval. All lending decisions are made solely by our partner institutions.', 1),
-        contentBlock('User Responsibilities', 'Your Obligations', 'By using our services, you agree to provide accurate and complete information in your applications. Misrepresentation of income, employment, or credit history may result in application denial and could constitute fraud. You are responsible for reviewing and understanding all financing terms before signing any agreement with a lending partner.', 2),
+        contentBlock('User Responsibilities', 'What We Ask of Our Clients', 'By using our services, you agree to provide accurate and complete information in your applications. Misrepresentation of income, employment, or credit history may result in application denial. You are responsible for reviewing and understanding all financing terms before signing any agreement with a lending partner.', 2),
         contentBlock('Limitation of Liability', 'Disclaimer', 'Approval Hero is not liable for lending decisions, vehicle conditions, dealership practices, or disputes between you and any lending partner or dealer. Financing terms including rates, payments, and eligibility are determined exclusively by lenders. Vehicle images and payment examples on this website are illustrative only.', 3),
-        contentBlock('Governing Law', 'Jurisdiction', 'These terms are governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein. Any disputes shall be resolved in the courts of Ontario. We reserve the right to update these terms at any time with notice posted on this page.', 4),
+        contentBlock('Governing Law', 'Legal', 'These terms are governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein. Any disputes shall be resolved in the courts of Ontario. We reserve the right to update these terms at any time for any reason at the sole discretion of the company. Filling out the application confirms that you have read the terms and conditions provided and agree to all legal requirements.', 4),
       ],
     },
   ];
@@ -859,15 +862,15 @@ async function seedFaqs(): Promise<{ categories: mongoose.Types.ObjectId[]; faqI
     { categoryId: catMap['general'], question: 'Is Approval Hero a lender?', answer: 'No. Approval Hero is not a bank, credit union, or direct lender. We work with a network of lending partners who make all credit decisions, set rates, and establish loan terms. Our role is to match you with appropriate programs.', order: 1, isFeatured: true },
     { categoryId: catMap['general'], question: 'What areas do you serve?', answer: 'We primarily serve the Greater Toronto Area and all of Ontario. Our lending and dealer partners have coverage across the province, so customers in cities like Ottawa, London, Hamilton, and Windsor can also access our programs.', order: 2 },
     { categoryId: catMap['application-process'], question: 'How do I apply?', answer: 'You can apply online through our contact page, call us at 416-700-2656, or email ak_2123@hotmail.com. The online application takes about 5 minutes and requires basic personal, employment, and housing information.', order: 0, isFeatured: true },
-    { categoryId: catMap['application-process'], question: 'Does applying affect my credit score?', answer: 'The initial inquiry through Approval Hero does not perform a hard credit pull. If you proceed with a specific lending partner, they may perform a credit check as part of their approval process. We always recommend asking before any hard inquiry is made.', order: 1 },
-    { categoryId: catMap['application-process'], question: 'How long does approval take?', answer: 'Most customers hear back within 24-48 business hours after submitting a complete application. Complex situations may take slightly longer. We prioritize fast communication so you are never left wondering about your status.', order: 2 },
+    { categoryId: catMap['application-process'], question: 'How fast can I get a vehicle and start driving if I apply?', answer: 'Many customers hear back from a financing specialist in under 12 hours. Once you are approved and have selected a vehicle, most people can finalize financing and start driving within a few days — depending on document verification and vehicle availability.', order: 1 },
+    { categoryId: catMap['application-process'], question: 'How long does approval take?', answer: 'Most customers hear back in less than 12 hours after submitting a complete application. Complex situations may take slightly longer. We prioritize fast communication so you are never left wondering about your status.', order: 2 },
     { categoryId: catMap['application-process'], question: 'What documents do I need?', answer: 'Typically: valid photo ID, proof of income (pay stubs, bank statements, or tax returns), proof of residence (utility bill or lease), and insurance information. Self-employed applicants should have 3-6 months of bank statements. Newcomers may need immigration documents and employment letters.', order: 3 },
-    { categoryId: catMap['credit-eligibility'], question: 'Can I get approved with bad credit?', answer: 'Many of our lending partners specialize in subprime financing for credit scores below 600. Approval is not guaranteed and depends on factors including income, employment stability, debt-to-income ratio, and down payment. We encourage you to apply so we can assess your specific situation.', order: 0, isFeatured: true },
+    { categoryId: catMap['credit-eligibility'], question: 'Can I get approved with bad credit?', answer: 'Many of our lending partners specialize in helping secure approvals for those who have been denied financing by other institutions, there\'s a wide range of techniques our professionals can leverage to help secure an approval even with credit scores that aren\'t the greatest!', order: 0, isFeatured: true },
     { categoryId: catMap['credit-eligibility'], question: 'Can I finance a car during bankruptcy?', answer: 'Some lenders work with applicants who have active consumer proposals or recent bankruptcy discharges. Options are more limited and terms may differ from standard programs. Contact us to discuss your specific insolvency status and timeline.', order: 1 },
     { categoryId: catMap['credit-eligibility'], question: 'I have no credit history. Can I still qualify?', answer: 'Yes. First-time buyer and newcomer programs use alternative verification such as employment history, rent payments, bank account activity, and co-signers. Having no credit is different from bad credit, and there are programs designed specifically for your situation.', order: 2 },
     { categoryId: catMap['credit-eligibility'], question: 'Do you offer $0 down payment programs?', answer: 'Zero-down programs are available through select lending partners, subject to creditworthiness, income verification, and vehicle eligibility. Not all applicants will qualify. Trade-in equity may also satisfy down payment requirements.', order: 3, isFeatured: true },
     { categoryId: catMap['payments-terms'], question: 'What interest rates should I expect?', answer: 'Rates vary widely based on credit profile, loan term, vehicle age, and lender. Subprime rates are typically higher than prime rates. We present all terms transparently before you commit to any agreement. There are no hidden fees from Approval Hero.', order: 0 },
-    { categoryId: catMap['payments-terms'], question: 'What loan terms are available?', answer: 'Most auto loans range from 36 to 84 months. Longer terms mean lower monthly payments but more interest paid over time. Your specialist will help you find the right balance between payment affordability and total cost.', order: 1 },
+    { categoryId: catMap['payments-terms'], question: 'What loan terms are available?', answer: 'Most auto loans range from 36 to 84 months. Longer terms mean lower monthly payments. Your specialist will help you find the right balance between payment affordability and total cost.', order: 1 },
     { categoryId: catMap['payments-terms'], question: 'Can I pay off my loan early?', answer: 'Most Canadian auto loans allow early repayment, though some lenders charge a prepayment penalty. Review your specific loan agreement for details. Paying off early can save significant interest and further improve your credit score.', order: 2 },
   ];
 

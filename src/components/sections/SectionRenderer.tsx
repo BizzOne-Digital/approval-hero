@@ -124,12 +124,18 @@ function HeroSection({ section }: { section: PageSection }) {
     ? getImageUrl(section.backgroundImage.url)
     : '/images/hero-bg.png';
   const isInner = section.metadata?.innerPage === true;
-  const eyebrow = section.eyebrow || 'Vehicle Financing Support';
-  const heading = section.heading || 'Denied Financing?';
-  const subheading = section.subheading || 'Your Road Forward Starts Here.';
-  const body = section.body || (isInner ? '' : 'We connect drivers with dealer partners who understand challenging credit situations.');
-  const ctaLabel = section.ctaLabel || 'Get Pre-Qualified';
-  const ctaLink = section.ctaLink || '/apply';
+  const isMinimal = section.metadata?.minimalHero === true;
+  const isMarketingHero = !isInner && !isMinimal;
+  const eyebrow = section.eyebrow || (isMinimal ? '' : 'Vehicle Financing Support');
+  const heading = section.heading || (isMinimal ? '' : 'Denied Financing?');
+  const subheading = section.subheading || (isMinimal ? '' : 'Your Road Forward Starts Here.');
+  const body =
+    section.body ??
+    (isMarketingHero ? 'We connect drivers with dealer partners who understand challenging credit situations.' : '');
+  const ctaLabel = section.ctaLabel ?? (isMarketingHero ? 'Get Pre-Qualified' : '');
+  const ctaLink = section.ctaLink ?? (isMarketingHero ? '/apply' : '');
+  const showCtas = Boolean(ctaLabel && ctaLink);
+  const showPhoneCta = isMarketingHero || (isInner && showCtas);
 
   return (
     <section className={`relative flex items-center overflow-hidden ${isInner ? 'min-h-[72vh]' : 'min-h-screen'}`}>
@@ -189,22 +195,26 @@ function HeroSection({ section }: { section: PageSection }) {
               </p>
             )}
 
-            <div className="flex flex-wrap gap-3 md:gap-4">
-              <Link
-                href={ctaLink}
-                className="font-display text-sm uppercase tracking-wider font-bold text-white bg-electric hover:bg-bright-blue rounded-full px-8 md:px-10 py-3.5 md:py-4 transition-all shadow-xl shadow-electric/30 hover:shadow-electric/50"
-              >
-                {ctaLabel}
-              </Link>
-              <a
-                href="tel:4167002656"
-                className="font-display text-sm uppercase tracking-wider font-semibold text-white border-2 border-white/80 rounded-full px-8 md:px-10 py-3.5 md:py-4 hover:bg-white/10 transition-colors"
-              >
-                Call 416-700-2656
-              </a>
-            </div>
+            {showCtas && (
+              <div className="flex flex-wrap gap-3 md:gap-4">
+                <Link
+                  href={ctaLink}
+                  className="font-display text-sm uppercase tracking-wider font-bold text-white bg-electric hover:bg-bright-blue rounded-full px-8 md:px-10 py-3.5 md:py-4 transition-all shadow-xl shadow-electric/30 hover:shadow-electric/50"
+                >
+                  {ctaLabel}
+                </Link>
+                {showPhoneCta && (
+                  <a
+                    href="tel:4167002656"
+                    className="font-display text-sm uppercase tracking-wider font-semibold text-white border-2 border-white/80 rounded-full px-8 md:px-10 py-3.5 md:py-4 hover:bg-white/10 transition-colors"
+                  >
+                    Call 416-700-2656
+                  </a>
+                )}
+              </div>
+            )}
 
-            {!isInner && (
+            {isMarketingHero && (
               <p className="font-display text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/45 mt-10">
                 $0 Down Options May Be Available &bull; Subject to Approval
               </p>

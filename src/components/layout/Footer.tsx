@@ -117,9 +117,6 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
                       {general?.address || general?.serviceArea}
                     </li>
                   )}
-                  {isContact && general?.businessHours && (
-                    <li className="text-white/40 text-xs pt-1 leading-relaxed">{general.businessHours}</li>
-                  )}
                 </ul>
               </div>
             );

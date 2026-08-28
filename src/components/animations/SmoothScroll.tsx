@@ -7,7 +7,8 @@ export function SmoothScroll({ enabled = true }: { enabled?: boolean }) {
   useEffect(() => {
     if (!enabled) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    if (prefersReduced || isCoarsePointer) return;
 
     const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
     let raf: number;

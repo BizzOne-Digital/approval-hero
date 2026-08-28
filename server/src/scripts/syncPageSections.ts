@@ -4,7 +4,7 @@
  */
 import mongoose from 'mongoose';
 import { connectDatabase } from '../config/database';
-import { Page } from '../models';
+import { Page, BlogPost, FAQ, SiteSettings } from '../models';
 import { logger } from '../utils/logger';
 
 // Import buildPages from seed - we'll duplicate minimal updates for gallery + testimonials
@@ -183,9 +183,9 @@ async function sync(): Promise<void> {
             heading: 'By the Numbers',
             items: [
               { title: '1,000+', description: 'Customers Assisted' },
-              { title: '50+', description: 'Lending Partners' },
+              { title: '25+', description: 'Lending Partners' },
               { title: '15+', description: 'Years Experience' },
-              { title: '24hr', description: 'Typical Response' },
+              { title: '<12hr', description: 'Typical Response' },
             ],
             isVisible: true,
             order: 3,
@@ -232,7 +232,137 @@ async function sync(): Promise<void> {
     },
   );
 
-  logger.info('Synced gallery, testimonials-faqs, and about page sections.');
+  await Page.updateOne(
+    { slug: 'home' },
+    {
+      $set: {
+        'sections.$[step].items.0.description':
+          'Fill out our secure application in minutes. No obligation and absolutely free of charge.',
+        'sections.$[step].items.2.description':
+          'Select your dream vehicle from the list of options that fit your preference and budget.',
+      },
+    },
+    {
+      arrayFilters: [
+        { 'step.sectionType': 'process-steps', 'step.heading': 'Three Simple Steps to Get Started' },
+      ],
+    },
+  );
+
+  await Page.updateOne(
+    { slug: 'home' },
+    {
+      $set: {
+        'sections.$[stats].items.2.title': '25+',
+        'sections.$[stats].items.3.title': '<12hr',
+      },
+    },
+    {
+      arrayFilters: [{ 'stats.sectionType': 'stats', 'stats.name': 'Trust Stats' }],
+    },
+  );
+
+  const blogCoverFixes: Record<string, string> = {
+    'auto-loans-build-credit-canada': 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=1920',
+    'ontario-auto-financing-trends-2025': 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920',
+  };
+
+  for (const [slug, url] of Object.entries(blogCoverFixes)) {
+    await BlogPost.updateOne(
+      { slug },
+      { $set: { 'coverImage.url': url, 'ogImage.url': url } },
+    );
+  }
+
+  await FAQ.updateOne(
+    { question: 'Can I get approved with bad credit?' },
+    {
+      $set: {
+        answer:
+          'Many of our lending partners specialize in helping secure approvals for those who have been denied financing by other institutions, there\'s a wide range of techniques our professionals can leverage to help secure an approval even with credit scores that aren\'t the greatest!',
+      },
+    },
+  );
+
+  await FAQ.updateOne(
+    { question: 'Does applying affect my credit score?' },
+    {
+      $set: {
+        question: 'How fast can I get a vehicle and start driving if I apply?',
+        answer:
+          'Many customers hear back from a financing specialist in under 12 hours. Once you are approved and have selected a vehicle, most people can finalize financing and start driving within a few days — depending on document verification and vehicle availability.',
+      },
+    },
+  );
+
+  await FAQ.updateOne(
+    { question: 'What loan terms are available?' },
+    {
+      $set: {
+        answer:
+          'Most auto loans range from 36 to 84 months. Longer terms mean lower monthly payments. Your specialist will help you find the right balance between payment affordability and total cost.',
+      },
+    },
+  );
+
+  await FAQ.updateOne(
+    { question: 'How long does approval take?' },
+    {
+      $set: {
+        answer:
+          'Most customers hear back in less than 12 hours after submitting a complete application. Complex situations may take slightly longer. We prioritize fast communication so you are never left wondering about your status.',
+      },
+    },
+  );
+
+  for (const slug of ['privacy', 'terms'] as const) {
+    await Page.updateOne(
+      { slug },
+      {
+        $set: {
+          'sections.$[hero].metadata': { minimalHero: true },
+          'sections.$[hero].body': '',
+          'sections.$[hero].ctaLabel': '',
+          'sections.$[hero].ctaLink': '',
+        },
+      },
+      {
+        arrayFilters: [{ 'hero.sectionType': 'hero' }],
+      },
+    );
+  }
+
+  await Page.updateOne(
+    { slug: 'terms' },
+    {
+      $set: {
+        'sections.$[section].heading': 'What We Ask of Our Clients',
+        'sections.$[section].body':
+          'By using our services, you agree to provide accurate and complete information in your applications. Misrepresentation of income, employment, or credit history may result in application denial. You are responsible for reviewing and understanding all financing terms before signing any agreement with a lending partner.',
+      },
+    },
+    {
+      arrayFilters: [{ 'section.name': 'User Responsibilities' }],
+    },
+  );
+
+  await Page.updateOne(
+    { slug: 'terms' },
+    {
+      $set: {
+        'sections.$[section].heading': 'Legal',
+        'sections.$[section].body':
+          'These terms are governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein. Any disputes shall be resolved in the courts of Ontario. We reserve the right to update these terms at any time for any reason at the sole discretion of the company. Filling out the application confirms that you have read the terms and conditions provided and agree to all legal requirements.',
+      },
+    },
+    {
+      arrayFilters: [{ 'section.name': 'Governing Law' }],
+    },
+  );
+
+  await SiteSettings.updateOne({}, { $unset: { 'general.businessHours': '' } });
+
+  logger.info('Synced gallery, testimonials-faqs, about, home process-steps, home stats, blog cover images, FAQ updates, legal page heroes, terms copy, and removed business hours.');
   await mongoose.disconnect();
   process.exit(0);
 }

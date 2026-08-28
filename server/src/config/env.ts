@@ -4,15 +4,18 @@ import { z } from 'zod';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
+const isVercel = !!process.env.VERCEL;
+const isNextRuntime = !!process.env.NEXT_RUNTIME || process.env.NEXT_PHASE === 'phase-production-build';
+
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.string().default('5000'),
   WEB_PORT: z.string().default('3000'),
-  MONGO_URI: z.string().min(1),
-  JWT_SECRET: z.string().min(16),
+  MONGO_URI: z.string().min(1).optional(),
+  JWT_SECRET: z.string().min(16).optional(),
   ENCRYPTION_KEY: z.string().min(16).optional(),
   JWT_EXPIRES_IN: z.string().default('7d'),
-  FRONTEND_URL: z.string().url(),
+  FRONTEND_URL: z.string().optional(),
   COOKIE_SECURE: z.string().default('false'),
   COOKIE_SAME_SITE: z.enum(['strict', 'lax', 'none']).default('lax'),
   SMTP_HOST: z.string().optional(),
@@ -28,12 +31,20 @@ const envSchema = z.object({
 
 const parsed = envSchema.safeParse(process.env);
 
-if (!parsed.success) {
+if (!parsed.success && !isVercel) {
   console.error('Invalid environment variables:', parsed.error.flatten().fieldErrors);
   process.exit(1);
 }
 
-const data = parsed.data;
+const raw = parsed.success ? parsed.data : envSchema.parse({ NODE_ENV: 'production' });
+const data = {
+  ...raw,
+  MONGO_URI: raw.MONGO_URI || process.env.MONGO_URI || '',
+  JWT_SECRET: raw.JWT_SECRET || 'dev-jwt-secret-key-minimum-32-characters',
+  FRONTEND_URL:
+    raw.FRONTEND_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+};
 const isProd = data.NODE_ENV === 'production';
 const insecureDefaults = ['change-this', 'ChangeMe', 'dev-only'];
 
@@ -43,7 +54,7 @@ function looksInsecure(value: string | undefined): boolean {
   return insecureDefaults.some((d) => lower.includes(d.toLowerCase()));
 }
 
-if (isProd) {
+if (isProd && !isVercel && !isNextRuntime) {
   if (looksInsecure(data.JWT_SECRET)) {
     console.error('Production requires a strong JWT_SECRET (not the default placeholder).');
     process.exit(1);

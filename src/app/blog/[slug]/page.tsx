@@ -66,7 +66,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
           <section className="section-padding">
             <div className="container-custom max-w-3xl">
-              <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
+              <div className="prose prose-lg max-w-none prose-a:text-electric prose-a:font-medium prose-a:underline hover:prose-a:text-bright-blue" dangerouslySetInnerHTML={{ __html: post.content }} />
               <p className="text-gray-400 text-sm mt-12 border-t pt-6">
                 This article is for informational purposes only and does not constitute personalized financial advice.
               </p>
@@ -79,7 +79,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                 <h2 className="font-display text-2xl font-bold text-midnight mb-8">Related Articles</h2>
                 <div className="grid md:grid-cols-3 gap-8">
                   {related.map((r) => (
-                    <Link key={r._id} href={`/blog/${r.slug}`} className="card-premium p-6 group">
+                    <Link key={r._id} href={`/blog/${r.slug}`} className="card-premium p-6 group block touch-manipulation cursor-pointer">
                       <h3 className="font-display text-lg font-bold text-midnight group-hover:text-electric transition-colors">{r.title}</h3>
                       <p className="text-gray-600 text-sm mt-2 line-clamp-2">{r.excerpt}</p>
                     </Link>

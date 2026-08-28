@@ -4,7 +4,7 @@ const internalApi = process.env.INTERNAL_API_URL;
 
 const nextConfig = {
   experimental: {
-    serverComponentsExternalPackages: ['mongoose', 'bcrypt'],
+    serverComponentsExternalPackages: ['mongoose', 'bcrypt', 'nodemailer'],
   },
   images: {
     remotePatterns: [
