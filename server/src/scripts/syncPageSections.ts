@@ -4,7 +4,7 @@
  */
 import mongoose from 'mongoose';
 import { connectDatabase } from '../config/database';
-import { Page, BlogPost, FAQ, SiteSettings } from '../models';
+import { Page, BlogPost, FAQ, SiteSettings, ApplicationSettings } from '../models';
 import { logger } from '../utils/logger';
 
 // Import buildPages from seed - we'll duplicate minimal updates for gallery + testimonials
@@ -362,7 +362,12 @@ async function sync(): Promise<void> {
 
   await SiteSettings.updateOne({}, { $unset: { 'general.businessHours': '' } });
 
-  logger.info('Synced gallery, testimonials-faqs, about, home process-steps, home stats, blog cover images, FAQ updates, legal page heroes, terms copy, and removed business hours.');
+  await ApplicationSettings.updateOne(
+    { 'vehicleTypes.id': 'truck' },
+    { $set: { 'vehicleTypes.$.imageUrl': '/images/vehicles/truck-highway.png' } },
+  );
+
+  logger.info('Synced gallery, testimonials-faqs, about, home process-steps, home stats, blog cover images, FAQ updates, legal page heroes, terms copy, removed business hours, and truck image.');
   await mongoose.disconnect();
   process.exit(0);
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
@@ -131,11 +131,13 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
   const currentMeta = steps[stepIndex];
   const progress = steps.length > 1 ? Math.round(((stepIndex + 1) / steps.length) * 100) : 0;
 
+  const hasSyncedStep = useRef(false);
+
   useEffect(() => {
-    if (savedStep && savedStep !== currentStepId && !submitted) {
-      setCurrentStepId(savedStep as StepId);
-    }
-  }, [savedStep, submitted, currentStepId]);
+    if (hasSyncedStep.current || !savedStep || submitted) return;
+    setCurrentStepId(savedStep as StepId);
+    hasSyncedStep.current = true;
+  }, [savedStep, submitted]);
 
   useEffect(() => {
     if (state.status === 'Submitted' && state.referenceNumber) {
@@ -269,7 +271,18 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
       case 'preferredVehicle': {
         const pv = local.preferredVehicle || merged.preferredVehicle || {};
         return (
-          <form onSubmit={(e) => {
+          <div className="space-y-6">
+            <div className="relative h-48 sm:h-56 rounded-xl overflow-hidden">
+              <Image
+                src="/images/vehicles/truck-highway.png"
+                alt="Truck on the highway"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 672px"
+                priority
+              />
+            </div>
+            <form onSubmit={(e) => {
             e.preventDefault();
             if (!pv.make?.trim()) { setErrors({ make: 'Make is required' }); return; }
             if (!pv.model?.trim()) { setErrors({ model: 'Model is required' }); return; }
@@ -291,6 +304,7 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continue <ChevronRight className="w-4 h-4" /></>}
             </button>
           </form>
+          </div>
         );
       }
 
