@@ -10,7 +10,7 @@ import {
 } from '../utils/encryption';
 import { sendApplicationOtp, verifyApplicationOtp } from './otpService';
 import { sendApplicationNotification } from './emailService';
-import { getApplicationSettings } from './applicationSettingsService';
+import { getApplicationSettings, normalizeVehicleTypes } from './applicationSettingsService';
 
 const SESSION_DAYS = 30;
 
@@ -107,7 +107,7 @@ export function sanitizeApplicationForClient(app: IApplication, settings?: Await
     dateOfBirth: app.encryptedDateOfBirth ? decryptField(app.encryptedDateOfBirth) : undefined,
     marketingConsent: app.marketingConsent,
     settings: settings ? {
-      vehicleTypes: settings.vehicleTypes.filter((v) => v.enabled !== false),
+      vehicleTypes: normalizeVehicleTypes(settings.vehicleTypes),
       downPaymentOptions: settings.downPaymentOptions.filter((v) => v.enabled !== false),
       creditCategories: settings.creditCategories.filter((v) => v.enabled !== false),
       purchaseTimelines: settings.purchaseTimelines.filter((v) => v.enabled !== false),

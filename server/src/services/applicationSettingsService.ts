@@ -1,11 +1,41 @@
 import { ApplicationSettings, IApplicationSettings } from '../models/ApplicationSettings';
 
+export const PICKUP_TRUCK_IMAGE = '/images/vehicles/pickup-truck.jpg';
+const DISABLED_VEHICLE_IDS = new Set(['coupe', 'hatchback', 'minivan']);
+
+type VehicleTypeOption = {
+  id: string;
+  label: string;
+  imageUrl?: string;
+  description?: string;
+  enabled?: boolean;
+};
+
+export function normalizeVehicleTypes(vehicleTypes: VehicleTypeOption[] = []) {
+  return vehicleTypes
+    .map((vehicleType) => {
+      if (vehicleType.id === 'truck') {
+        return {
+          ...vehicleType,
+          label: 'Pickup Truck',
+          imageUrl: PICKUP_TRUCK_IMAGE,
+          enabled: true,
+        };
+      }
+      if (DISABLED_VEHICLE_IDS.has(vehicleType.id)) {
+        return { ...vehicleType, enabled: false };
+      }
+      return vehicleType;
+    })
+    .filter((vehicleType) => vehicleType.enabled !== false);
+}
+
 export const DEFAULT_APPLICATION_SETTINGS = {
   version: '1.0.0',
   vehicleTypes: [
     { id: 'sedan', label: 'Sedan', imageUrl: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600', enabled: true },
     { id: 'suv', label: 'SUV / Crossover', imageUrl: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=600', enabled: true },
-    { id: 'truck', label: 'Pickup Truck', imageUrl: '/images/vehicles/pickup-truck.jpg', enabled: true },
+    { id: 'truck', label: 'Pickup Truck', imageUrl: PICKUP_TRUCK_IMAGE, enabled: true },
     { id: 'coupe', label: 'Coupe', imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600', enabled: false },
     { id: 'hatchback', label: 'Hatchback', imageUrl: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600', enabled: false },
     { id: 'minivan', label: 'Minivan', imageUrl: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600', enabled: false },

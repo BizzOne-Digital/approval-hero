@@ -24,6 +24,19 @@ import {
 
 interface OptionItem { id: string; label: string; imageUrl?: string; description?: string }
 
+const PICKUP_TRUCK_IMAGE = '/images/vehicles/pickup-truck.jpg';
+const HIDDEN_VEHICLE_IDS = new Set(['coupe', 'hatchback', 'minivan']);
+
+function normalizeVehicleTypes(options: OptionItem[] = []): OptionItem[] {
+  return options
+    .filter((opt) => !HIDDEN_VEHICLE_IDS.has(opt.id))
+    .map((opt) => (
+      opt.id === 'truck'
+        ? { ...opt, label: 'Pickup Truck', imageUrl: PICKUP_TRUCK_IMAGE }
+        : opt
+    ));
+}
+
 interface WizardSettings {
   vehicleTypes?: OptionItem[];
   downPaymentOptions?: OptionItem[];
@@ -124,7 +137,13 @@ export function FinancingApplicationWizard() {
   const [mockOtpHint, setMockOtpHint] = useState('');
   const [consents, setConsents] = useState({ accuracy: false, contact: false, privacy: false, partnerShare: false, marketing: false });
 
-  const cfg = (settings || {}) as WizardSettings;
+  const cfg = useMemo(() => {
+    const raw = (settings || {}) as WizardSettings;
+    return {
+      ...raw,
+      vehicleTypes: normalizeVehicleTypes(raw.vehicleTypes),
+    };
+  }, [settings]);
   const merged = useMemo(() => ({ ...state, ...local }), [state, local]);
   const steps = useMemo(() => getActiveSteps(merged), [merged]);
   const stepIndex = getStepIndex(steps, currentStepId);
@@ -271,8 +290,8 @@ export function FinancingApplicationWizard() {
           <div className="space-y-6">
             <div className="relative h-48 sm:h-56 rounded-xl overflow-hidden">
               <Image
-                src="/images/vehicles/truck-highway.png"
-                alt="Truck on the highway"
+                src={PICKUP_TRUCK_IMAGE}
+                alt="Pickup truck on the road"
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 672px"
