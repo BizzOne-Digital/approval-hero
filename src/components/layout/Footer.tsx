@@ -43,7 +43,6 @@ const DEFAULT_COLUMNS = [
   {
     title: 'Contact',
     links: [
-      { label: '416-700-2656', href: 'tel:4167002656' },
       { label: 'ak_2123@hotmail.com', href: 'mailto:ak_2123@hotmail.com' },
       { label: 'Apply Online', href: '/apply' },
     ],
@@ -70,7 +69,10 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
   const general = settings?.general;
   const footer = settings?.footer;
   const year = new Date().getFullYear();
-  const columns = footerColumns.length > 0 ? footerColumns : DEFAULT_COLUMNS;
+  const columns = (footerColumns.length > 0 ? footerColumns : DEFAULT_COLUMNS).map((col) => ({
+    ...col,
+    links: col.links.filter((link) => !link.href.startsWith('tel:')),
+  }));
 
   return (
     <footer className="bg-[#030d1a] text-white border-t border-white/5">
@@ -81,7 +83,7 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
               <ApprovalHeroLogo height={48} onDark />
             </Link>
             <p className="text-white/55 text-sm leading-relaxed mb-6 max-w-sm">
-              {footer?.description || 'We connect drivers with dealer and lending partners who understand challenging credit situations.'}
+              {footer?.description || 'Vehicle financing support for drivers across Ontario.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
@@ -90,12 +92,6 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
               >
                 {footer?.ctaLabel || 'Get Pre-Qualified'}
               </Link>
-              <a
-                href={`tel:${(general?.phone || '416-700-2656').replace(/\D/g, '')}`}
-                className="inline-flex justify-center font-display text-xs uppercase tracking-wider text-white border border-white/40 rounded-full px-8 py-3 hover:bg-white/5 transition-colors"
-              >
-                {general?.phone || '416-700-2656'}
-              </a>
             </div>
           </div>
 

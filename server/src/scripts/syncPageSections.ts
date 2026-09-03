@@ -4,7 +4,7 @@
  */
 import mongoose from 'mongoose';
 import { connectDatabase } from '../config/database';
-import { Page, BlogPost, FAQ, SiteSettings, ApplicationSettings } from '../models';
+import { Page, BlogPost, FAQ, SiteSettings, ApplicationSettings, Navigation } from '../models';
 import { logger } from '../utils/logger';
 
 // Import buildPages from seed - we'll duplicate minimal updates for gallery + testimonials
@@ -143,7 +143,7 @@ async function sync(): Promise<void> {
             eyebrow: 'Our Story',
             heading: 'About Approval Hero',
             subheading: 'Helping Ontario Drivers Get Back on the Road.',
-            body: 'We connect drivers with dealer and lending partners who understand challenging credit — so you can move forward with confidence.',
+            body: '',
             ctaLabel: 'Get Pre-Qualified',
             ctaLink: '/apply',
             backgroundImage: { url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2001?w=1920&q=85', alt: 'About Approval Hero' },
@@ -360,14 +360,42 @@ async function sync(): Promise<void> {
     },
   );
 
-  await SiteSettings.updateOne({}, { $unset: { 'general.businessHours': '' } });
+  await SiteSettings.updateOne({}, { $unset: { 'general.businessHours': '' }, $set: { 'general.phone': '', 'header.phone': '' } });
+
+  for (const vehicleId of ['coupe', 'hatchback', 'minivan']) {
+    await ApplicationSettings.updateOne(
+      { 'vehicleTypes.id': vehicleId },
+      { $set: { 'vehicleTypes.$.enabled': false } },
+    );
+  }
 
   await ApplicationSettings.updateOne(
     { 'vehicleTypes.id': 'truck' },
-    { $set: { 'vehicleTypes.$.imageUrl': '/images/vehicles/truck-highway.png' } },
+    { $set: { 'vehicleTypes.$.imageUrl': '/images/vehicles/pickup-truck.jpg', 'vehicleTypes.$.label': 'Pickup Truck' } },
   );
 
-  logger.info('Synced gallery, testimonials-faqs, about, home process-steps, home stats, blog cover images, FAQ updates, legal page heroes, terms copy, removed business hours, and truck image.');
+  await Page.updateMany(
+    {},
+    { $set: { 'sections.$[section].body': '' } },
+    { arrayFilters: [{ 'section.body': { $regex: /connect drivers/i } }] },
+  );
+
+  await Page.updateMany(
+    {},
+    { $set: { 'sections.$[section].ctaLabel': 'Apply Now', 'sections.$[section].ctaLink': '/apply' } },
+    { arrayFilters: [{ 'section.ctaLink': 'tel:4167002656' }] },
+  );
+
+  const nav = await Navigation.findOne();
+  if (nav) {
+    nav.footerColumns = nav.footerColumns.map((col) => ({
+      ...col,
+      links: col.links.filter((link) => !String(link.href).startsWith('tel:')),
+    }));
+    await nav.save();
+  }
+
+  logger.info('Synced gallery, testimonials-faqs, about, home process-steps, home stats, blog cover images, FAQ updates, legal page heroes, terms copy, removed business hours, phone numbers, connect-drivers text, and pickup truck image.');
   await mongoose.disconnect();
   process.exit(0);
 }

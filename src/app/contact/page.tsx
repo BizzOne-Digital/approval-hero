@@ -6,7 +6,7 @@ import { LeadForm } from '@/components/forms/LeadForm';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
 import type { Metadata } from 'next';
-import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Mail, MapPin, Clock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -75,16 +75,6 @@ export default async function ContactPage() {
               <div>
                 <h2 className="font-display text-2xl font-bold text-midnight mb-8">Get In Touch</h2>
                 <div className="space-y-6">
-                  <a
-                    href={`tel:${general?.phone?.replace(/\D/g, '')}`}
-                    className="flex items-center gap-4 p-4 bg-white rounded-lg border border-ice-blue hover:border-electric transition-colors"
-                  >
-                    <Phone className="w-6 h-6 text-electric" />
-                    <div>
-                      <p className="text-sm text-gray-500">Phone</p>
-                      <p className="font-semibold text-midnight">{general?.phone || '416-700-2656'}</p>
-                    </div>
-                  </a>
                   <a
                     href={`mailto:${general?.email}`}
                     className="flex items-center gap-4 p-4 bg-white rounded-lg border border-ice-blue hover:border-electric transition-colors"

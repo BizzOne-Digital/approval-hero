@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield, ChevronRight, ChevronLeft, Loader2, Check,
-  Car, Truck, Users, Gauge,
+  Car, Truck, Users,
 } from 'lucide-react';
 import { publicApi } from '@/lib/api';
 import { cn } from '@/lib/utils';
@@ -13,10 +13,7 @@ import { ApprovalHeroLogo } from '@/components/brand/ApprovalHeroLogo';
 const VEHICLE_TYPES = [
   { id: 'sedan', label: 'Sedans', icon: Car, image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400' },
   { id: 'suv', label: 'SUVs / Crossovers', icon: Users, image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400' },
-  { id: 'truck', label: 'Trucks', icon: Truck, image: 'https://images.unsplash.com/photo-1533473359331-30c20e68572a?w=400' },
-  { id: 'coupe', label: 'Coupes', icon: Gauge, image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400' },
-  { id: 'hatchback', label: 'Hatchbacks', icon: Car, image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400' },
-  { id: 'minivan', label: 'Minivans', icon: Users, image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400' },
+  { id: 'truck', label: 'Pickup Trucks', icon: Truck, image: '/images/vehicles/pickup-truck.jpg' },
 ];
 
 const STEPS = [

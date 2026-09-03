@@ -71,12 +71,9 @@ export interface ApplicationState {
 
 const BASE_STEPS: Omit<StepMeta, 'question'>[] = [
   { id: 'vehicleType', category: 'Vehicle' },
-  { id: 'knowsSpecificVehicle', category: 'Vehicle' },
-  { id: 'preferredVehicle', category: 'Vehicle' },
   { id: 'tradeIn', category: 'Trade-In' },
   { id: 'tradeInDetails', category: 'Trade-In' },
   { id: 'downPayment', category: 'Financing' },
-  { id: 'creditSituation', category: 'Credit' },
   { id: 'purchaseTiming', category: 'Timeline' },
   { id: 'residencyStatus', category: 'Residency' },
   { id: 'employmentStatus', category: 'Employment' },
@@ -113,8 +110,10 @@ const QUESTIONS: Record<StepId, string> = {
 
 export function shouldIncludeStep(id: StepId, state: ApplicationState): boolean {
   switch (id) {
+    case 'knowsSpecificVehicle':
     case 'preferredVehicle':
-      return state.knowsSpecificVehicle === true;
+    case 'creditSituation':
+      return false;
     case 'tradeInDetails':
       return state.tradeIn?.planning === 'yes' && !state.tradeIn?.detailsSkipped;
     default:

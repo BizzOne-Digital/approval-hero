@@ -1,5 +1,4 @@
 import { FinancingApplicationWizard } from '@/components/forms/application/FinancingApplicationWizard';
-import { publicApi } from '@/lib/api';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,14 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default async function ApplyPage() {
-  let settings;
-  try {
-    settings = await publicApi.getSettings();
-  } catch {
-    settings = undefined;
-  }
-
-  const phone = settings?.general?.phone || '416-700-2656';
-
-  return <FinancingApplicationWizard phone={phone} />;
+  return <FinancingApplicationWizard />;
 }

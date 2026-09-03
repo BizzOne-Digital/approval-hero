@@ -216,7 +216,7 @@ async function seedSiteSettings(): Promise<void> {
       businessName: 'Approval Hero',
       tagline: 'Your Road Forward Starts Here',
       email: 'ak_2123@hotmail.com',
-      phone: '416-700-2656',
+      phone: '',
       alternatePhone: '1-888-555-0199',
       address: 'Greater Toronto Area, Ontario, Canada',
       serviceArea: 'Greater Toronto Area and across Ontario',
@@ -276,7 +276,7 @@ async function seedSiteSettings(): Promise<void> {
     header: {
       ctaLabel: 'Apply Now',
       ctaLink: '/apply',
-      phone: '416-700-2656',
+      phone: '',
     },
     pricing: {
       showPricing: false,
@@ -335,9 +335,8 @@ async function seedNavigation(): Promise<void> {
         title: 'Contact',
         order: 3,
         links: [
-          { label: '416-700-2656', href: 'tel:4167002656', order: 0 },
-          { label: 'ak_2123@hotmail.com', href: 'mailto:ak_2123@hotmail.com', order: 1 },
-          { label: 'Apply Online', href: '/apply', order: 2 },
+          { label: 'ak_2123@hotmail.com', href: 'mailto:ak_2123@hotmail.com', order: 0 },
+          { label: 'Apply Online', href: '/apply', order: 1 },
         ],
       },
     ],
@@ -366,7 +365,7 @@ function buildPages() {
           'Get Pre-Qualified',
           '/apply',
           'Vehicle Financing Support',
-          'We connect drivers with dealer partners who understand challenging credit situations.',
+          '',
         ),
         featuresSection(
           'Why Approval Hero',
@@ -429,7 +428,7 @@ function buildPages() {
           'Get Pre-Qualified',
           '/apply',
           'Our Story',
-          'We connect drivers with dealer and lending partners who understand challenging credit — so you can move forward with confidence.',
+          '',
           { innerPage: true },
         ),
         contentBlock(
@@ -729,12 +728,11 @@ function buildPages() {
       slug: 'contact',
       status: 'published' as const,
       seoTitle: 'Contact Approval Hero',
-      seoDescription: 'Contact Approval Hero for vehicle financing assistance in Ontario. Call 416-700-2656 or apply online.',
+      seoDescription: 'Contact Approval Hero for vehicle financing assistance in Ontario. Apply online today.',
       sections: [
-        heroSection('Contact Hero', 'Get In Touch', 'Ready to explore your financing options? We are here to help.', 0, IMAGES.office, 'Call Now', 'tel:4167002656', 'Contact'),
+        heroSection('Contact Hero', 'Get In Touch', 'Ready to explore your financing options? We are here to help.', 0, IMAGES.office, 'Apply Now', '/apply', 'Contact'),
         { name: 'Contact Form', sectionType: 'form-section', heading: 'Apply Online', subheading: 'Complete the form below and a financing specialist will contact you within one business day.', body: 'Fields: name, email, phone, credit situation, vehicle preference, message, consent.', textAlignment: 'center', isVisible: true, order: 1 },
         featuresSection('Contact Info', 'Other Ways to Reach Us', [
-          { title: 'Phone', description: '416-700-2656', icon: 'phone' },
           { title: 'Email', description: 'ak_2123@hotmail.com — We respond within 24 hours', icon: 'mail' },
           { title: 'Service Area', description: 'Greater Toronto Area and all of Ontario', icon: 'map-pin' },
         ], 2),
@@ -861,7 +859,7 @@ async function seedFaqs(): Promise<{ categories: mongoose.Types.ObjectId[]; faqI
     { categoryId: catMap['general'], question: 'What is Approval Hero?', answer: 'Approval Hero is a vehicle financing assistance service based in Ontario. We connect customers with dealer and lending partners who specialize in programs for various credit situations, including bad credit, no credit, bankruptcy, and zero-down options.', order: 0, isFeatured: true },
     { categoryId: catMap['general'], question: 'Is Approval Hero a lender?', answer: 'No. Approval Hero is not a bank, credit union, or direct lender. We work with a network of lending partners who make all credit decisions, set rates, and establish loan terms. Our role is to match you with appropriate programs.', order: 1, isFeatured: true },
     { categoryId: catMap['general'], question: 'What areas do you serve?', answer: 'We primarily serve the Greater Toronto Area and all of Ontario. Our lending and dealer partners have coverage across the province, so customers in cities like Ottawa, London, Hamilton, and Windsor can also access our programs.', order: 2 },
-    { categoryId: catMap['application-process'], question: 'How do I apply?', answer: 'You can apply online through our contact page, call us at 416-700-2656, or email ak_2123@hotmail.com. The online application takes about 5 minutes and requires basic personal, employment, and housing information.', order: 0, isFeatured: true },
+    { categoryId: catMap['application-process'], question: 'How do I apply?', answer: 'You can apply online through our contact page or email ak_2123@hotmail.com. The online application takes about 5 minutes and requires basic personal, employment, and housing information.', order: 0, isFeatured: true },
     { categoryId: catMap['application-process'], question: 'How fast can I get a vehicle and start driving if I apply?', answer: 'Many customers hear back from a financing specialist in under 12 hours. Once you are approved and have selected a vehicle, most people can finalize financing and start driving within a few days — depending on document verification and vehicle availability.', order: 1 },
     { categoryId: catMap['application-process'], question: 'How long does approval take?', answer: 'Most customers hear back in less than 12 hours after submitting a complete application. Complex situations may take slightly longer. We prioritize fast communication so you are never left wondering about your status.', order: 2 },
     { categoryId: catMap['application-process'], question: 'What documents do I need?', answer: 'Typically: valid photo ID, proof of income (pay stubs, bank statements, or tax returns), proof of residence (utility bill or lease), and insurance information. Self-employed applicants should have 3-6 months of bank statements. Newcomers may need immigration documents and employment letters.', order: 3 },

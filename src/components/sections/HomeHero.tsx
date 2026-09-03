@@ -53,10 +53,6 @@ export function HomeHero() {
             Your Road Forward Starts Here.
           </p>
 
-          <p className="text-white/70 text-base md:text-[1.05rem] leading-relaxed mb-8 md:mb-10 max-w-md">
-            We connect drivers with dealer partners who understand challenging credit situations.
-          </p>
-
           <div className="flex flex-wrap gap-3 md:gap-4">
             <Link
               href="/apply"
@@ -64,19 +60,8 @@ export function HomeHero() {
             >
               Get Pre-Qualified
             </Link>
-            <a
-              href="tel:4167002656"
-              className="inline-flex items-center justify-center font-display text-xs md:text-sm uppercase tracking-[0.12em] font-semibold text-white border border-white/70 rounded-full px-8 md:px-10 py-3.5 md:py-4 hover:bg-white/10 transition-colors"
-            >
-              Call 416-700-2656
-            </a>
           </div>
         </div>
-
-        {/* Disclaimer — pinned to bottom-left like SS1 */}
-        <p className="absolute bottom-6 left-5 lg:left-8 font-display text-[9px] md:text-[10px] uppercase tracking-[0.22em] text-white/40 max-w-xs">
-          $0 Down Options May Be Available &bull; Subject to Approval
-        </p>
       </div>
     </section>
   );

@@ -39,7 +39,6 @@ export function Header({ settings, navItems }: HeaderProps) {
     setMobileOpen(false);
   }, [pathname]);
 
-  const phone = settings?.header?.phone || settings?.general?.phone || '416-700-2656';
   const ctaLink = settings?.header?.ctaLink || '/apply';
   const ctaLabel = settings?.header?.ctaLabel || 'Apply Now';
 
@@ -86,12 +85,6 @@ export function Header({ settings, navItems }: HeaderProps) {
 
           {/* Right CTAs */}
           <div className="hidden md:flex items-center gap-3 ml-auto lg:ml-0 flex-shrink-0">
-            <a
-              href={`tel:${phone.replace(/\D/g, '')}`}
-              className="font-display text-[10px] 2xl:text-[11px] uppercase tracking-[0.1em] text-white border border-white/60 rounded-full px-5 py-2.5 hover:bg-white/10 transition-colors whitespace-nowrap"
-            >
-              {phone}
-            </a>
             <Link
               href={ctaLink}
               className="font-display text-[10px] 2xl:text-[11px] uppercase tracking-[0.1em] font-bold text-white bg-electric hover:bg-[#1a75ff] rounded-full px-6 py-2.5 transition-all shadow-[0_0_20px_rgba(8,102,255,0.4)] whitespace-nowrap"
@@ -128,9 +121,6 @@ export function Header({ settings, navItems }: HeaderProps) {
                   </Link>
                 </motion.div>
               ))}
-              <a href={`tel:${phone.replace(/\D/g, '')}`} className="mt-6 font-display text-electric border border-electric/50 rounded-full px-8 py-3">
-                {phone}
-              </a>
             </div>
           </motion.div>
         )}

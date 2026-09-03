@@ -108,7 +108,7 @@ function Field({ label, error, children, optional }: { label: string; error?: st
 
 const inputClass = 'w-full border border-gray-200 rounded-lg px-4 py-3 text-midnight focus:outline-none focus:ring-2 focus:ring-electric/40 focus:border-electric';
 
-export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?: string }) {
+export function FinancingApplicationWizard() {
   const reducedMotion = useReducedMotion();
   const { state, settings, currentStep: savedStep, loading, error, saveStep, sendOtp, verifyOtp, submit } = useApplicationSession();
   const [currentStepId, setCurrentStepId] = useState<StepId>('vehicleType');
@@ -231,9 +231,6 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
           <p className="font-display text-2xl text-electric tracking-wider">{submitResult.referenceNumber}</p>
           {sm?.expectedResponseTime && <p className="text-sm text-gray-500 mt-3">{sm.expectedResponseTime}</p>}
         </div>
-        <p className="text-gray-600 mb-8">
-          Questions? Call <a href={`tel:${phone.replace(/\D/g, '')}`} className="text-electric font-medium">{phone}</a>
-        </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/" className="btn-primary">Return to Home</Link>
           <Link href="/faqs" className="btn-outline">View FAQs</Link>
@@ -697,12 +694,8 @@ export function FinancingApplicationWizard({ phone = '416-700-2656' }: { phone?:
           <div className="space-y-6">
             <div className="bg-gray-50 rounded-xl p-5 space-y-3 text-sm">
               <SummaryRow label="Vehicle Type" value={label(merged.vehicleType || '')} stepId="vehicleType" onEdit={goToStep} />
-              {merged.knowsSpecificVehicle && merged.preferredVehicle && (
-                <SummaryRow label="Preferred Vehicle" value={`${merged.preferredVehicle.make} ${merged.preferredVehicle.model}`} stepId="preferredVehicle" onEdit={goToStep} />
-              )}
               <SummaryRow label="Trade-In" value={merged.tradeIn?.planning || '—'} stepId="tradeIn" onEdit={goToStep} />
               <SummaryRow label="Down Payment" value={label(merged.downPaymentRange || '')} stepId="downPayment" onEdit={goToStep} />
-              <SummaryRow label="Credit" value={label(merged.creditCategory || '')} stepId="creditSituation" onEdit={goToStep} />
               <SummaryRow label="Purchase Timeline" value={label(merged.purchaseTimeline || '')} stepId="purchaseTiming" onEdit={goToStep} />
               <SummaryRow label="Employment" value={label(merged.employmentStatus || '')} stepId="employmentStatus" onEdit={goToStep} />
               <SummaryRow label="Income" value={label(merged.monthlyIncomeRange || '')} stepId="monthlyIncome" onEdit={goToStep} />

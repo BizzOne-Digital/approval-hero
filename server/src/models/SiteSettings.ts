@@ -83,7 +83,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
       businessName: { type: String, default: 'Approval Hero' },
       tagline: { type: String, default: 'Your Road Forward Starts Here' },
       email: { type: String, default: 'ak_2123@hotmail.com' },
-      phone: { type: String, default: '416-700-2656' },
+      phone: { type: String, default: '' },
       alternatePhone: String,
       address: String,
       serviceArea: { type: String, default: 'Greater Toronto Area and Ontario' },
@@ -140,7 +140,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     header: {
       ctaLabel: { type: String, default: 'Apply Now' },
       ctaLink: { type: String, default: '/contact' },
-      phone: { type: String, default: '416-700-2656' },
+      phone: { type: String, default: '' },
     },
     pricing: {
       showPricing: { type: Boolean, default: false },
