@@ -63,12 +63,13 @@ The apply form now uses **built-in API routes** on Vercel (same as CMS pages).
 | Name | Value |
 |------|--------|
 | `ENCRYPTION_KEY` | Random 32+ char string (`npm run deploy:secrets`) |
-| `SMTP_HOST` | e.g. `smtp.gmail.com` |
-| `SMTP_PORT` | `587` |
-| `SMTP_USER` | Your email |
-| `SMTP_PASS` | App password |
-| `SMTP_FROM` | `Approval Hero <noreply@approvalhero.ca>` |
-| `NOTIFICATION_EMAIL` | Where new applications are sent |
+| `SMTP_HOST` | `smtp.zohocloud.ca` (Zoho Canada) |
+| `SMTP_PORT` | `465` |
+| `SMTP_SECURE` | `true` |
+| `SMTP_USER` | `info@approvalhero.ca` |
+| `SMTP_PASS` | Zoho app password for Approval Hero mailbox |
+| `SMTP_FROM` | `Approval Hero <info@approvalhero.ca>` |
+| `NOTIFICATION_EMAIL` | `info@approvalhero.ca` (or inbox where leads/applications should go) |
 
 Without SMTP, the form loads and saves steps, but **email verification will fail** in production until SMTP is configured.
 

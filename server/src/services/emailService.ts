@@ -11,10 +11,12 @@ function getTransporter(): nodemailer.Transporter | null {
     return null;
   }
   if (!transporter) {
+    const port = parseInt(env.SMTP_PORT || '587', 10);
+    const secure = env.SMTP_SECURE === 'true' || port === 465;
     transporter = nodemailer.createTransport({
       host: env.SMTP_HOST,
-      port: parseInt(env.SMTP_PORT || '587', 10),
-      secure: false,
+      port,
+      secure,
       auth: { user: env.SMTP_USER, pass: env.SMTP_PASS },
     });
   }
