@@ -24,8 +24,8 @@ Go to **Vercel → Project → Settings → Environment Variables**
 
 | Name | Problem |
 |------|---------|
-| `NEXT_PUBLIC_API_URL` | If set to `http://localhost:5000/api` → **DELETE IT** |
-| | Or set to: `https://approval-hero-nb2m.vercel.app/api` |
+| `NEXT_PUBLIC_API_URL` | If set to `http://localhost:5000/api` → **DELETE IT** (browser now uses same-origin `/api` automatically) |
+| | Custom domain: `https://www.approvalhero.ca/api` — use **www** if that is your canonical host |
 
 ### 2. MongoDB Atlas
 

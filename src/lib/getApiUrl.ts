@@ -7,9 +7,18 @@ export function getApiBaseUrl(): string {
     return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
   };
 
-  // Explicit public URL (external API host) — ignore localhost on Vercel
   const publicUrl = process.env.NEXT_PUBLIC_API_URL;
   const isLocalhost = publicUrl && /localhost|127\.0\.0\.1/i.test(publicUrl);
+
+  // Browser: same-origin /api unless a real production API URL is configured
+  if (typeof window !== 'undefined') {
+    if (!publicUrl || isLocalhost) {
+      return `${window.location.origin}/api`;
+    }
+    return normalize(publicUrl);
+  }
+
+  // Explicit public URL (external API host) — ignore localhost on Vercel SSR
   if (publicUrl && !(process.env.VERCEL_URL && isLocalhost)) {
     return normalize(publicUrl);
   }
@@ -35,6 +44,9 @@ export function getApiBaseUrl(): string {
 export function getUploadsBaseUrl(): string {
   if (process.env.NEXT_PUBLIC_UPLOADS_URL) {
     return process.env.NEXT_PUBLIC_UPLOADS_URL.replace(/\/$/, '');
+  }
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
   }
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
