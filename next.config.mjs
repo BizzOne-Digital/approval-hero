@@ -13,6 +13,16 @@ const nextConfig = {
       { protocol: 'https', hostname: '**' },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'approvalhero.ca' }],
+        destination: 'https://www.approvalhero.ca/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     const rules = [];
 

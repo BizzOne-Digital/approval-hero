@@ -10,12 +10,24 @@ export function getApiBaseUrl(): string {
   const publicUrl = process.env.NEXT_PUBLIC_API_URL;
   const isLocalhost = publicUrl && /localhost|127\.0\.0\.1/i.test(publicUrl);
 
-  // Browser: same-origin /api unless a real production API URL is configured
+  // Browser: always call /api on the current site (built-in Next routes on Vercel).
+  // Avoids Network Error from wrong NEXT_PUBLIC_API_URL (localhost, apex vs www, vercel.app vs custom domain).
   if (typeof window !== 'undefined') {
+    const sameOriginApi = `${window.location.origin}/api`;
     if (!publicUrl || isLocalhost) {
-      return `${window.location.origin}/api`;
+      return sameOriginApi;
     }
-    return normalize(publicUrl);
+    try {
+      const configured = new URL(normalize(publicUrl));
+      const pageHost = window.location.hostname.replace(/^www\./, '');
+      const apiHost = configured.hostname.replace(/^www\./, '');
+      if (apiHost === pageHost && configured.origin === window.location.origin) {
+        return normalize(publicUrl);
+      }
+    } catch {
+      // ignore invalid URL
+    }
+    return sameOriginApi;
   }
 
   // Explicit public URL (external API host) — ignore localhost on Vercel SSR

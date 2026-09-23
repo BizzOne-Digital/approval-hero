@@ -1,6 +1,24 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import type { ApiResponse } from './types';
 import { getApiBaseUrl } from './getApiUrl';
+
+function toApiError(error: unknown): Error {
+  if (isAxiosError(error)) {
+    const body = error.response?.data as ApiResponse<unknown> | undefined;
+    if (body && typeof body === 'object' && body.error) {
+      return new Error(body.error);
+    }
+    if (error.response) {
+      return new Error(`Request failed (${error.response.status})`);
+    }
+    if (error.message === 'Network Error') {
+      return new Error('Could not reach the server. Check your connection and try again.');
+    }
+    return new Error(error.message || 'Request failed');
+  }
+  if (error instanceof Error) return error;
+  return new Error('Request failed');
+}
 
 export const api = axios.create({
   withCredentials: true,
@@ -25,33 +43,53 @@ api.interceptors.response.use(
 );
 
 export async function fetchApi<T>(url: string, options?: { preview?: boolean }, headers?: Record<string, string>): Promise<T> {
-  const params = options?.preview ? { preview: 'true' } : undefined;
-  const { data } = await api.get<ApiResponse<T>>(url, { params, headers });
-  if (!data.success) throw new Error(data.error || 'API error');
-  return data.data as T;
+  try {
+    const params = options?.preview ? { preview: 'true' } : undefined;
+    const { data } = await api.get<ApiResponse<T>>(url, { params, headers });
+    if (!data.success) throw new Error(data.error || 'API error');
+    return data.data as T;
+  } catch (error) {
+    throw toApiError(error);
+  }
 }
 
 export async function postApi<T>(url: string, body: unknown, headers?: Record<string, string>): Promise<T> {
-  const { data } = await api.post<ApiResponse<T>>(url, body, { headers });
-  if (!data.success) throw new Error(data.error || 'API error');
-  return data.data as T;
+  try {
+    const { data } = await api.post<ApiResponse<T>>(url, body, { headers });
+    if (!data.success) throw new Error(data.error || 'API error');
+    return data.data as T;
+  } catch (error) {
+    throw toApiError(error);
+  }
 }
 
 export async function patchApi<T>(url: string, body: unknown, headers?: Record<string, string>): Promise<T> {
-  const { data } = await api.patch<ApiResponse<T>>(url, body, { headers });
-  if (!data.success) throw new Error(data.error || 'API error');
-  return data.data as T;
+  try {
+    const { data } = await api.patch<ApiResponse<T>>(url, body, { headers });
+    if (!data.success) throw new Error(data.error || 'API error');
+    return data.data as T;
+  } catch (error) {
+    throw toApiError(error);
+  }
 }
 
 export async function putApi<T>(url: string, body: unknown): Promise<T> {
-  const { data } = await api.put<ApiResponse<T>>(url, body);
-  if (!data.success) throw new Error(data.error || 'API error');
-  return data.data as T;
+  try {
+    const { data } = await api.put<ApiResponse<T>>(url, body);
+    if (!data.success) throw new Error(data.error || 'API error');
+    return data.data as T;
+  } catch (error) {
+    throw toApiError(error);
+  }
 }
 
 export async function deleteApi(url: string): Promise<void> {
-  const { data } = await api.delete<ApiResponse<null>>(url);
-  if (!data.success) throw new Error(data.error || 'API error');
+  try {
+    const { data } = await api.delete<ApiResponse<null>>(url);
+    if (!data.success) throw new Error(data.error || 'API error');
+  } catch (error) {
+    throw toApiError(error);
+  }
 }
 
 // Public API

@@ -75,29 +75,36 @@ export function useApplicationSession() {
     if (initRef.current) return;
     initRef.current = true;
 
+    async function startFreshSession() {
+      const utm = getUtmParams();
+      const result = await applicationApi.start({
+        source: 'apply',
+        referrer: document.referrer || undefined,
+        deviceCategory: getDeviceCategory(),
+        ...utm,
+      });
+      localStorage.setItem(TOKEN_KEY, result.token);
+      setToken(result.token);
+      trackApplicationEvent('application_started');
+      const session = await applicationApi.getSession(result.token);
+      applySession(session as Record<string, unknown>);
+    }
+
     async function init() {
       try {
         const stored = localStorage.getItem(TOKEN_KEY);
         if (stored) {
-          const session = await applicationApi.getSession(stored);
-          setToken(stored);
-          applySession(session as Record<string, unknown>);
-          setLoading(false);
-          return;
+          try {
+            const session = await applicationApi.getSession(stored);
+            setToken(stored);
+            applySession(session as Record<string, unknown>);
+            return;
+          } catch {
+            localStorage.removeItem(TOKEN_KEY);
+          }
         }
 
-        const utm = getUtmParams();
-        const result = await applicationApi.start({
-          source: 'apply',
-          referrer: document.referrer || undefined,
-          deviceCategory: getDeviceCategory(),
-          ...utm,
-        });
-        localStorage.setItem(TOKEN_KEY, result.token);
-        setToken(result.token);
-        trackApplicationEvent('application_started');
-        const session = await applicationApi.getSession(result.token);
-        applySession(session as Record<string, unknown>);
+        await startFreshSession();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to start application');
       } finally {

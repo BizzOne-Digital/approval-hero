@@ -24,8 +24,8 @@ Go to **Vercel → Project → Settings → Environment Variables**
 
 | Name | Problem |
 |------|---------|
-| `NEXT_PUBLIC_API_URL` | If set to `http://localhost:5000/api` → **DELETE IT** (browser now uses same-origin `/api` automatically) |
-| | Custom domain: `https://www.approvalhero.ca/api` — use **www** if that is your canonical host |
+| `NEXT_PUBLIC_API_URL` | If set to `http://localhost:5000/api` or wrong host (apex vs **www**, vercel.app vs custom domain) → **DELETE IT**. The apply form uses same-origin `/api` in the browser. |
+| `INTERNAL_API_URL` | On Vercel with built-in `/api` routes, **do not set** — it proxies `/api` to an external server and can break `/apply`. |
 
 ### 2. MongoDB Atlas
 
