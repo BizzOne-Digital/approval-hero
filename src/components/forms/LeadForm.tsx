@@ -37,9 +37,9 @@ export function LeadForm({ variant = 'compact', sourcePage = '/', consentText }:
   const onSubmit = async (data: LeadFormData) => {
     setError('');
     try {
-      await publicApi.submitApplication({
+      await publicApi.submitContact({
         ...data,
-        submissionType: 'application',
+        submissionType: 'contact',
         sourcePage,
       });
       setSuccess(true);

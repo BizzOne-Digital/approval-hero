@@ -28,6 +28,7 @@
     "seed": "tsx server/src/scripts/seed.ts",
     "create-admin": "tsx server/src/scripts/createAdmin.ts",
     "sync-pages": "tsx server/src/scripts/syncPageSections.ts",
+    "sync-client-content": "tsx server/src/scripts/syncClientContent.ts",
     "test:smtp": "tsx server/src/scripts/testSmtp.ts",
     "lint": "next lint"
   },

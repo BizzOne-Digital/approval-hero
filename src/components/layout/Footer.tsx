@@ -43,7 +43,7 @@ const DEFAULT_COLUMNS = [
   {
     title: 'Contact',
     links: [
-      { label: 'ak_2123@hotmail.com', href: 'mailto:ak_2123@hotmail.com' },
+      { label: 'info@approvalhero.com', href: 'mailto:info@approvalhero.com' },
       { label: 'Apply Online', href: '/apply' },
     ],
   },
@@ -65,10 +65,19 @@ function FooterLink({ href, label }: { href: string; label: string }) {
   );
 }
 
+function formatFooterCopyright(copyright: string | undefined, year: number): string {
+  const fallback = 'Approval Hero. All rights reserved.';
+  const raw = (copyright || fallback).trim();
+  const withoutSymbol = raw.replace(/^©\s*/u, '').replace(/^&copy;\s*/i, '');
+  const withoutYear = withoutSymbol.replace(/^\d{4}\s*/, '');
+  return `© ${year} ${withoutYear || fallback}`;
+}
+
 export function Footer({ settings, footerColumns = [] }: FooterProps) {
   const general = settings?.general;
   const footer = settings?.footer;
   const year = new Date().getFullYear();
+  const copyrightLine = formatFooterCopyright(footer?.copyright, year);
   const columns = (footerColumns.length > 0 ? footerColumns : DEFAULT_COLUMNS).map((col) => ({
     ...col,
     links: col.links.filter((link) => !link.href.startsWith('tel:')),
@@ -127,7 +136,7 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
           </p>
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-white/40 text-xs">
-              &copy; {year} {footer?.copyright || 'Approval Hero. All rights reserved.'}
+              {copyrightLine}
             </p>
             <div className="flex gap-6">
               <Link href="/privacy" className="text-white/40 hover:text-white text-xs transition-colors uppercase tracking-wider">

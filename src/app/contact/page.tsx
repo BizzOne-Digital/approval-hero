@@ -82,7 +82,7 @@ export default async function ContactPage() {
                     <Mail className="w-6 h-6 text-electric" />
                     <div>
                       <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-semibold text-midnight">{general?.email || 'ak_2123@hotmail.com'}</p>
+                      <p className="font-semibold text-midnight">{general?.email || 'info@approvalhero.com'}</p>
                     </div>
                   </a>
                   {general?.serviceArea && (

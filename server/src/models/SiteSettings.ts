@@ -82,7 +82,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     general: {
       businessName: { type: String, default: 'Approval Hero' },
       tagline: { type: String, default: 'Your Road Forward Starts Here' },
-      email: { type: String, default: 'ak_2123@hotmail.com' },
+      email: { type: String, default: 'info@approvalhero.com' },
       phone: { type: String, default: '' },
       alternatePhone: String,
       address: String,
@@ -117,13 +117,13 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
       robotsIndex: { type: Boolean, default: true },
     },
     contact: {
-      notificationEmail: { type: String, default: 'ak_2123@hotmail.com' },
+      notificationEmail: { type: String, default: 'info@approvalhero.com' },
       successMessage: { type: String, default: 'Thank you! We will contact you shortly.' },
       consentText: { type: String, default: 'I consent to being contacted about vehicle financing options.' },
       spamProtection: { type: Boolean, default: true },
     },
     animation: {
-      introEnabled: { type: Boolean, default: true },
+      introEnabled: { type: Boolean, default: false },
       introDuration: { type: Number, default: 3500 },
       smoothScrolling: { type: Boolean, default: true },
       animationIntensity: { type: String, enum: ['low', 'medium', 'high'], default: 'high' },
