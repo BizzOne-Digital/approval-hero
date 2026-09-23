@@ -215,7 +215,7 @@ async function seedSiteSettings(): Promise<void> {
     general: {
       businessName: 'Approval Hero',
       tagline: 'Your Road Forward Starts Here',
-      email: 'info@approvalhero.com',
+      email: 'info@approvalhero.ca',
       phone: '',
       alternatePhone: '1-888-555-0199',
       address: 'Greater Toronto Area, Ontario, Canada',
@@ -250,7 +250,7 @@ async function seedSiteSettings(): Promise<void> {
       robotsIndex: true,
     },
     contact: {
-      notificationEmail: 'info@approvalhero.com',
+      notificationEmail: 'info@approvalhero.ca',
       successMessage: 'Thank you! A financing specialist will contact you within one business day.',
       consentText:
         'I consent to being contacted by Approval Hero and its lending partners about vehicle financing options via phone, email, or text message.',
@@ -335,7 +335,7 @@ async function seedNavigation(): Promise<void> {
         title: 'Contact',
         order: 3,
         links: [
-          { label: 'info@approvalhero.com', href: 'mailto:info@approvalhero.com', order: 0 },
+          { label: 'info@approvalhero.ca', href: 'mailto:info@approvalhero.ca', order: 0 },
           { label: 'Apply Online', href: '/apply', order: 1 },
         ],
       },
@@ -733,7 +733,7 @@ function buildPages() {
         heroSection('Contact Hero', 'Get In Touch', 'Ready to explore your financing options? We are here to help.', 0, IMAGES.office, 'Apply Now', '/apply', 'Contact'),
         { name: 'Contact Form', sectionType: 'form-section', heading: 'Apply Online', subheading: 'Complete the form below and a financing specialist will contact you within one business day.', body: 'Fields: name, email, phone, credit situation, vehicle preference, message, consent.', textAlignment: 'center', isVisible: true, order: 1 },
         featuresSection('Contact Info', 'Other Ways to Reach Us', [
-          { title: 'Email', description: 'info@approvalhero.com — We respond within 24 hours', icon: 'mail' },
+          { title: 'Email', description: 'info@approvalhero.ca — We respond within 24 hours', icon: 'mail' },
           { title: 'Service Area', description: 'Greater Toronto Area and all of Ontario', icon: 'map-pin' },
         ], 2),
         contentBlock('What Happens Next', 'After You Apply', 'Once we receive your application, a financing specialist will review your information and contact you to discuss your situation. This initial conversation is free and carries no obligation. We will explain available programs, estimated payments, and next steps based on your unique profile.', 3, IMAGES.handshake),
@@ -751,7 +751,7 @@ function buildPages() {
         contentBlock('Information We Collect', 'Personal Information', 'We collect information you provide directly, including your name, email address, phone number, employment details, housing information, and credit situation when you submit an application or contact form. We may also collect technical data such as IP address, browser type, and pages visited through cookies and analytics tools.', 1),
         contentBlock('How We Use Your Information', 'Purpose of Collection', 'Your information is used to process financing applications, connect you with appropriate lending partners, respond to inquiries, send relevant communications about your application, and improve our services. We do not sell your personal information to third parties.', 2),
         contentBlock('Data Security', 'Protecting Your Data', 'We implement industry-standard security measures including encryption, secure servers, and access controls to protect your personal information. While no system is 100% secure, we take reasonable steps to safeguard your data against unauthorized access, alteration, or disclosure.', 3),
-        contentBlock('Your Rights', 'Access and Control', 'You may request access to, correction of, or deletion of your personal information by contacting us at info@approvalhero.com. You may also withdraw consent for marketing communications at any time. This policy was last updated in 2025.', 4),
+        contentBlock('Your Rights', 'Access and Control', 'You may request access to, correction of, or deletion of your personal information by contacting us at info@approvalhero.ca. You may also withdraw consent for marketing communications at any time. This policy was last updated in 2025.', 4),
       ],
     },
     {
@@ -859,7 +859,7 @@ async function seedFaqs(): Promise<{ categories: mongoose.Types.ObjectId[]; faqI
     { categoryId: catMap['general'], question: 'What is Approval Hero?', answer: 'Approval Hero is a vehicle financing assistance service based in Ontario. We connect customers with dealer and lending partners who specialize in programs for various credit situations, including bad credit, no credit, bankruptcy, and zero-down options.', order: 0, isFeatured: true },
     { categoryId: catMap['general'], question: 'Is Approval Hero a lender?', answer: 'No. Approval Hero is not a bank, credit union, or direct lender. We work with a network of lending partners who make all credit decisions, set rates, and establish loan terms. Our role is to match you with appropriate programs.', order: 1, isFeatured: true },
     { categoryId: catMap['general'], question: 'What areas do you serve?', answer: 'We primarily serve the Greater Toronto Area and all of Ontario. Our lending and dealer partners have coverage across the province, so customers in cities like Ottawa, London, Hamilton, and Windsor can also access our programs.', order: 2 },
-    { categoryId: catMap['application-process'], question: 'How do I apply?', answer: 'You can apply online through our contact page or email info@approvalhero.com. The online application takes about 5 minutes and requires basic personal, employment, and housing information.', order: 0, isFeatured: true },
+    { categoryId: catMap['application-process'], question: 'How do I apply?', answer: 'You can apply online through our contact page or email info@approvalhero.ca. The online application takes about 5 minutes and requires basic personal, employment, and housing information.', order: 0, isFeatured: true },
     { categoryId: catMap['application-process'], question: 'How fast can I get a vehicle and start driving if I apply?', answer: 'Many customers hear back from a financing specialist in under 12 hours. Once you are approved and have selected a vehicle, most people can finalize financing and start driving within a few days — depending on document verification and vehicle availability.', order: 1 },
     { categoryId: catMap['application-process'], question: 'How long does approval take?', answer: 'Most customers hear back in less than 12 hours after submitting a complete application. Complex situations may take slightly longer. We prioritize fast communication so you are never left wondering about your status.', order: 2 },
     { categoryId: catMap['application-process'], question: 'What documents do I need?', answer: 'Typically: valid photo ID, proof of income (pay stubs, bank statements, or tax returns), proof of residence (utility bill or lease), and insurance information. Self-employed applicants should have 3-6 months of bank statements. Newcomers may need immigration documents and employment letters.', order: 3 },

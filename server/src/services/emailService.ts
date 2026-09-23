@@ -70,7 +70,7 @@ export async function sendApplicationNotification(payload: {
   }
 
   const settings = await SiteSettings.findOne();
-  const to = settings?.contact?.notificationEmail || env.NOTIFICATION_EMAIL || 'info@approvalhero.com';
+  const to = settings?.contact?.notificationEmail || env.NOTIFICATION_EMAIL || 'info@approvalhero.ca';
   if (!to) return;
 
   const html = `
@@ -105,7 +105,7 @@ export async function sendLeadNotification(lead: ILead): Promise<void> {
   }
 
   const settings = await SiteSettings.findOne();
-  const to = settings?.contact?.notificationEmail || env.NOTIFICATION_EMAIL || 'info@approvalhero.com';
+  const to = settings?.contact?.notificationEmail || env.NOTIFICATION_EMAIL || 'info@approvalhero.ca';
 
   if (!to) return;
 

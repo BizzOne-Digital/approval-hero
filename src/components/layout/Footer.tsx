@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ApprovalHeroLogo } from '@/components/brand/ApprovalHeroLogo';
+import { resolveSiteEmail, SITE_CONTACT_EMAIL } from '@/lib/siteEmail';
 import type { SiteSettings } from '@/lib/types';
 
 interface FooterProps {
@@ -43,7 +44,7 @@ const DEFAULT_COLUMNS = [
   {
     title: 'Contact',
     links: [
-      { label: 'info@approvalhero.com', href: 'mailto:info@approvalhero.com' },
+      { label: SITE_CONTACT_EMAIL, href: `mailto:${SITE_CONTACT_EMAIL}` },
       { label: 'Apply Online', href: '/apply' },
     ],
   },
@@ -80,7 +81,17 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
   const copyrightLine = formatFooterCopyright(footer?.copyright, year);
   const columns = (footerColumns.length > 0 ? footerColumns : DEFAULT_COLUMNS).map((col) => ({
     ...col,
-    links: col.links.filter((link) => !link.href.startsWith('tel:')),
+    links: col.links
+      .filter((link) => !link.href.startsWith('tel:'))
+      .map((link) => {
+        const isContactCol = col.title.toLowerCase() === 'contact';
+        const isEmailLink = link.href.startsWith('mailto:') || link.label.includes('@');
+        if (isContactCol && isEmailLink) {
+          const email = resolveSiteEmail(link.label);
+          return { ...link, label: email, href: `mailto:${email}` };
+        }
+        return link;
+      }),
   }));
 
   return (

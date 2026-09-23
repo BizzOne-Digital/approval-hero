@@ -10,12 +10,16 @@ import { Page } from '../models/Page';
 import { FAQ } from '../models/FAQ';
 import { logger } from '../utils/logger';
 
-const CLIENT_EMAIL = 'info@approvalhero.com';
-const OLD_EMAIL = 'ak_2123@hotmail.com';
+const CLIENT_EMAIL = 'info@approvalhero.ca';
+const OLD_EMAILS = ['ak_2123@hotmail.com', 'info@approvalhero.com'];
 
 function deepReplaceEmail<T>(value: T): T {
   if (typeof value === 'string') {
-    return value.replaceAll(OLD_EMAIL, CLIENT_EMAIL) as T;
+    let next = value;
+    for (const old of OLD_EMAILS) {
+      next = next.replaceAll(old, CLIENT_EMAIL);
+    }
+    return next as T;
   }
   if (Array.isArray(value)) {
     return value.map((item) => deepReplaceEmail(item)) as T;
@@ -55,8 +59,8 @@ async function main() {
     const cols = nav.footerColumns.map((col) => ({
       ...col,
       links: (col.links || []).map((link) => {
-        const label = link.label?.includes(OLD_EMAIL) ? CLIENT_EMAIL : link.label;
-        const href = link.href?.includes(OLD_EMAIL) ? `mailto:${CLIENT_EMAIL}` : link.href;
+        const label = OLD_EMAILS.some((e) => link.label?.includes(e)) ? CLIENT_EMAIL : link.label;
+        const href = OLD_EMAILS.some((e) => link.href?.includes(e)) ? `mailto:${CLIENT_EMAIL}` : link.href;
         return { ...link, label, href };
       }),
     }));

@@ -5,6 +5,7 @@ import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { LeadForm } from '@/components/forms/LeadForm';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
+import { resolveSiteEmail } from '@/lib/siteEmail';
 import type { Metadata } from 'next';
 import { Mail, MapPin, Clock } from 'lucide-react';
 
@@ -82,7 +83,7 @@ export default async function ContactPage() {
                     <Mail className="w-6 h-6 text-electric" />
                     <div>
                       <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-semibold text-midnight">{general?.email || 'info@approvalhero.com'}</p>
+                      <p className="font-semibold text-midnight">{resolveSiteEmail(general?.email)}</p>
                     </div>
                   </a>
                   {general?.serviceArea && (
