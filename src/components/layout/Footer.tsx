@@ -68,7 +68,7 @@ function FooterLink({ href, label }: { href: string; label: string }) {
 function formatFooterCopyright(copyright: string | undefined, year: number): string {
   const fallback = 'Approval Hero. All rights reserved.';
   const raw = (copyright || fallback).trim();
-  const withoutSymbol = raw.replace(/^©\s*/u, '').replace(/^&copy;\s*/i, '');
+  const withoutSymbol = raw.replace(/^\u00A9\s*/, '').replace(/^&copy;\s*/i, '');
   const withoutYear = withoutSymbol.replace(/^\d{4}\s*/, '');
   return `© ${year} ${withoutYear || fallback}`;
 }
