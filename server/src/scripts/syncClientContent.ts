@@ -13,7 +13,7 @@ import { logger } from '../utils/logger';
 const CLIENT_EMAIL = 'info@approvalhero.ca';
 const OLD_EMAILS = ['ak_2123@hotmail.com', 'info@approvalhero.com'];
 
-function deepReplaceEmail<T>(value: T): T {
+function deepReplaceEmail(value: unknown): unknown {
   if (value instanceof mongoose.Types.ObjectId || value instanceof Date) {
     return value;
   }
@@ -22,17 +22,17 @@ function deepReplaceEmail<T>(value: T): T {
     for (const old of OLD_EMAILS) {
       next = next.replaceAll(old, CLIENT_EMAIL);
     }
-    return next as T;
+    return next;
   }
   if (Array.isArray(value)) {
-    return value.map((item) => deepReplaceEmail(item)) as T;
+    return value.map((item) => deepReplaceEmail(item));
   }
   if (value && typeof value === 'object') {
     const out: Record<string, unknown> = {};
     for (const [key, val] of Object.entries(value)) {
       out[key] = deepReplaceEmail(val);
     }
-    return out as T;
+    return out;
   }
   return value;
 }
@@ -72,21 +72,25 @@ async function main() {
     logger.info('Navigation footer columns updated.');
   }
 
-  async function syncModelEmails(model: typeof Page | typeof FAQ, label: string) {
-    const docs = await model.find({}).lean();
-    let updated = 0;
-    for (const doc of docs) {
-      const next = deepReplaceEmail(doc);
-      if (JSON.stringify(next) === JSON.stringify(doc)) continue;
-      const { _id, ...rest } = next as { _id: mongoose.Types.ObjectId };
-      await model.updateOne({ _id }, { $set: rest });
-      updated += 1;
-    }
-    logger.info(`${label}: ${updated} document(s) updated for email.`);
+  let pagesUpdated = 0;
+  for (const doc of await Page.find({}).lean()) {
+    const next = deepReplaceEmail(doc);
+    if (JSON.stringify(next) === JSON.stringify(doc)) continue;
+    const { _id, ...rest } = next as { _id: mongoose.Types.ObjectId };
+    await Page.updateOne({ _id }, { $set: rest });
+    pagesUpdated += 1;
   }
+  logger.info(`pages: ${pagesUpdated} document(s) updated for email.`);
 
-  await syncModelEmails(Page, 'pages');
-  await syncModelEmails(FAQ, 'faqs');
+  let faqsUpdated = 0;
+  for (const doc of await FAQ.find({}).lean()) {
+    const next = deepReplaceEmail(doc);
+    if (JSON.stringify(next) === JSON.stringify(doc)) continue;
+    const { _id, ...rest } = next as { _id: mongoose.Types.ObjectId };
+    await FAQ.updateOne({ _id }, { $set: rest });
+    faqsUpdated += 1;
+  }
+  logger.info(`faqs: ${faqsUpdated} document(s) updated for email.`);
 
   logger.info('Done. Redeploy the site if needed.');
   await mongoose.disconnect();
