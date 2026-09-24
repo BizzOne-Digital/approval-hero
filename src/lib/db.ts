@@ -5,7 +5,7 @@ declare global {
   var mongooseCache: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null };
 }
 
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI;
 
 if (!MONGO_URI) {
   console.warn('[db] MONGO_URI is not set — CMS API routes will fail.');

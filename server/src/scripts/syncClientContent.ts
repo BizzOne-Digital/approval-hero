@@ -14,6 +14,9 @@ const CLIENT_EMAIL = 'info@approvalhero.ca';
 const OLD_EMAILS = ['ak_2123@hotmail.com', 'info@approvalhero.com'];
 
 function deepReplaceEmail<T>(value: T): T {
+  if (value instanceof mongoose.Types.ObjectId || value instanceof Date) {
+    return value;
+  }
   if (typeof value === 'string') {
     let next = value;
     for (const old of OLD_EMAILS) {
@@ -69,25 +72,21 @@ async function main() {
     logger.info('Navigation footer columns updated.');
   }
 
-  const pages = await Page.find({});
-  for (const page of pages) {
-    const next = deepReplaceEmail(page.toObject());
-    if (JSON.stringify(next) !== JSON.stringify(page.toObject())) {
-      page.set(next);
-      await page.save();
+  async function syncModelEmails(model: typeof Page | typeof FAQ, label: string) {
+    const docs = await model.find({}).lean();
+    let updated = 0;
+    for (const doc of docs) {
+      const next = deepReplaceEmail(doc);
+      if (JSON.stringify(next) === JSON.stringify(doc)) continue;
+      const { _id, ...rest } = next as { _id: mongoose.Types.ObjectId };
+      await model.updateOne({ _id }, { $set: rest });
+      updated += 1;
     }
+    logger.info(`${label}: ${updated} document(s) updated for email.`);
   }
-  logger.info('CMS pages scanned for old email.');
 
-  const faqs = await FAQ.find({});
-  for (const faq of faqs) {
-    const next = deepReplaceEmail(faq.toObject());
-    if (JSON.stringify(next) !== JSON.stringify(faq.toObject())) {
-      faq.set(next);
-      await faq.save();
-    }
-  }
-  logger.info('FAQs scanned for old email.');
+  await syncModelEmails(Page, 'pages');
+  await syncModelEmails(FAQ, 'faqs');
 
   logger.info('Done. Redeploy the site if needed.');
   await mongoose.disconnect();

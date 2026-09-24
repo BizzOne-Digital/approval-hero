@@ -40,7 +40,7 @@ if (!parsed.success && !isVercel) {
 const raw = parsed.success ? parsed.data : envSchema.parse({ NODE_ENV: 'production' });
 const data = {
   ...raw,
-  MONGO_URI: raw.MONGO_URI || process.env.MONGO_URI || '',
+  MONGO_URI: raw.MONGO_URI || process.env.MONGO_URI || process.env.MONGODB_URI || '',
   JWT_SECRET: raw.JWT_SECRET || 'dev-jwt-secret-key-minimum-32-characters',
   FRONTEND_URL:
     raw.FRONTEND_URL ||
