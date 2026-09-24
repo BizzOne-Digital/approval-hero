@@ -1,7 +1,6 @@
 import { Oswald, Inter } from 'next/font/google';
 import { Providers } from '@/components/providers/Providers';
 import { SmoothScroll } from '@/components/animations/SmoothScroll';
-import { ApplyRouteWrapper } from '@/components/layout/ApplyRouteWrapper';
 import './globals.css';
 
 const oswald = Oswald({
@@ -35,12 +34,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Providers>
           <SmoothScroll />
-          <ApplyRouteWrapper>
-            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-electric text-white px-4 py-2 z-[100]">
-              Skip to content
-            </a>
-            {children}
-          </ApplyRouteWrapper>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-electric text-white px-4 py-2 z-[100]">
+            Skip to content
+          </a>
+          {children}
         </Providers>
       </body>
     </html>
