@@ -87,8 +87,14 @@ export default async function ServiceDetailPage({ params }: { params: { slug: st
                 </AnimateOnScroll>
                 {detail.sectionImages?.[0]?.url && (
                   <AnimateOnScroll direction="right">
-                    <div className="relative h-80 rounded-lg overflow-hidden">
-                      <Image src={getImageUrl(detail.sectionImages[0].url)} alt={detail.sectionImages[0].alt || ''} fill className="object-cover" />
+                    <div className="relative aspect-[4/5] sm:aspect-[3/4] max-h-[28rem] w-full rounded-lg overflow-hidden bg-soft">
+                      <Image
+                        src={getImageUrl(detail.sectionImages[0].url)}
+                        alt={detail.sectionImages[0].alt || ''}
+                        fill
+                        className="object-contain object-center"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
                     </div>
                   </AnimateOnScroll>
                 )}

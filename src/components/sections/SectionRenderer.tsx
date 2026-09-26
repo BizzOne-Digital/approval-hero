@@ -671,14 +671,14 @@ function ContentBlock({ section }: { section: PageSection }) {
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <AnimateOnScroll direction={reversed ? 'right' : 'left'} className={reversed ? 'lg:order-2' : ''}>
-              <div className="relative h-72 sm:h-80 lg:h-[28rem] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
+              <div className="relative aspect-[4/5] sm:aspect-[3/4] max-h-[32rem] w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5 bg-soft">
                 <Image
                   src={sideImage}
                   alt={section.primaryImage?.alt || section.heading || ''}
                   fill
-                  className="object-cover hover:scale-105 transition-transform duration-700"
+                  className="object-contain object-center"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-midnight/30 to-transparent" />
               </div>
             </AnimateOnScroll>
             <AnimateOnScroll direction={reversed ? 'left' : 'right'} className={reversed ? 'lg:order-1' : ''}>
@@ -765,8 +765,14 @@ function ImageText({ section }: { section: PageSection }) {
         <div className={`grid lg:grid-cols-2 gap-12 items-center ${reversed ? 'lg:flex-row-reverse' : ''}`}>
           <AnimateOnScroll direction={reversed ? 'right' : 'left'}>
             {img && (
-              <div className="relative h-80 lg:h-96 rounded-lg overflow-hidden">
-                <Image src={img} alt={section.primaryImage?.alt || ''} fill className="object-cover" />
+              <div className="relative aspect-[4/5] sm:aspect-[3/4] max-h-[28rem] w-full rounded-lg overflow-hidden bg-soft">
+                <Image
+                  src={img}
+                  alt={section.primaryImage?.alt || ''}
+                  fill
+                  className="object-contain object-center"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
               </div>
             )}
           </AnimateOnScroll>
