@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AnimateOnScroll, StaggerChildren, StaggerItem } from '@/components/animations/AnimateOnScroll';
 import { LeadForm } from '@/components/forms/LeadForm';
+import { SectionSideImage } from '@/components/sections/SectionSideImage';
 import { getImageUrl } from '@/lib/utils';
 import type { GalleryImage, PageSection, Service, SiteSettings, Testimonial, FAQ } from '@/lib/types';
 import {
@@ -671,15 +672,10 @@ function ContentBlock({ section }: { section: PageSection }) {
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <AnimateOnScroll direction={reversed ? 'right' : 'left'} className={reversed ? 'lg:order-2' : ''}>
-              <div className="relative aspect-[4/5] sm:aspect-[3/4] max-h-[32rem] w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5 bg-soft">
-                <Image
-                  src={sideImage}
-                  alt={section.primaryImage?.alt || section.heading || ''}
-                  fill
-                  className="object-contain object-center"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
+              <SectionSideImage
+                src={sideImage}
+                alt={section.primaryImage?.alt || section.heading || ''}
+              />
             </AnimateOnScroll>
             <AnimateOnScroll direction={reversed ? 'left' : 'right'} className={reversed ? 'lg:order-1' : ''}>
               {section.eyebrow && (
@@ -765,15 +761,11 @@ function ImageText({ section }: { section: PageSection }) {
         <div className={`grid lg:grid-cols-2 gap-12 items-center ${reversed ? 'lg:flex-row-reverse' : ''}`}>
           <AnimateOnScroll direction={reversed ? 'right' : 'left'}>
             {img && (
-              <div className="relative aspect-[4/5] sm:aspect-[3/4] max-h-[28rem] w-full rounded-lg overflow-hidden bg-soft">
-                <Image
-                  src={img}
-                  alt={section.primaryImage?.alt || ''}
-                  fill
-                  className="object-contain object-center"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
+              <SectionSideImage
+                src={img}
+                alt={section.primaryImage?.alt || ''}
+                className="w-full h-auto rounded-lg shadow-lg ring-1 ring-black/5 bg-soft"
+              />
             )}
           </AnimateOnScroll>
           <AnimateOnScroll direction={reversed ? 'left' : 'right'} className={reversed ? 'lg:order-first' : ''}>

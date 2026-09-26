@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { publicApi } from '@/lib/api';
+import { SectionSideImage } from '@/components/sections/SectionSideImage';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { CheckCircle } from 'lucide-react';
@@ -87,15 +88,11 @@ export default async function ServiceDetailPage({ params }: { params: { slug: st
                 </AnimateOnScroll>
                 {detail.sectionImages?.[0]?.url && (
                   <AnimateOnScroll direction="right">
-                    <div className="relative aspect-[4/5] sm:aspect-[3/4] max-h-[28rem] w-full rounded-lg overflow-hidden bg-soft">
-                      <Image
-                        src={getImageUrl(detail.sectionImages[0].url)}
-                        alt={detail.sectionImages[0].alt || ''}
-                        fill
-                        className="object-contain object-center"
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                      />
-                    </div>
+                    <SectionSideImage
+                      src={getImageUrl(detail.sectionImages[0].url)}
+                      alt={detail.sectionImages[0].alt || ''}
+                      className="w-full h-auto rounded-lg shadow-lg ring-1 ring-black/5 bg-soft"
+                    />
                   </AnimateOnScroll>
                 )}
               </div>
