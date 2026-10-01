@@ -1,0 +1,17 @@
+node_modules
+.next
+.git
+.env
+.env.*
+!.env.example
+npm-debug.log*
+server/dist
+server/uploads/*
+!server/uploads/.gitkeep
+backend
+frontend
+*.md
+!README.md
+.DS_Store
+coverage
+.cursor

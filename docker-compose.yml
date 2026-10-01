@@ -1,0 +1,35 @@
+services:
+  api:
+    build: .
+    container_name: approval-hero-api
+    command: node server/dist/server.js
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    volumes:
+      - uploads:/app/server/uploads
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:5000/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  web:
+    build: .
+    container_name: approval-hero-web
+    command: node node_modules/next/dist/bin/next start -p 3000
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      INTERNAL_API_URL: http://api:5000
+    ports:
+      - '${WEB_PORT:-3000}:3000'
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  uploads:
