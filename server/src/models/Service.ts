@@ -112,7 +112,6 @@ const ServiceSchema = new Schema<IService>(
   { timestamps: true }
 );
 
-ServiceSchema.index({ slug: 1 });
 ServiceSchema.index({ status: 1, order: 1 });
 
 export const Service = mongoose.model<IService>('Service', ServiceSchema);

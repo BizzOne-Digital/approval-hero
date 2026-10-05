@@ -35,7 +35,7 @@ if (!env) {
   errors.push('.env file not found — copy .env.example to .env');
 } else {
   const isProd = env.NODE_ENV === 'production';
-  const required = ['MONGO_URI', 'JWT_SECRET', 'FRONTEND_URL', 'NEXT_PUBLIC_API_URL', 'NEXT_PUBLIC_SITE_URL'];
+  const required = ['MONGO_URI', 'JWT_SECRET', 'FRONTEND_URL', 'NEXT_PUBLIC_SITE_URL'];
 
   for (const key of required) {
     if (!env[key]) errors.push(`Missing required variable: ${key}`);
@@ -47,6 +47,12 @@ if (!env) {
     if (insecure(env.ENCRYPTION_KEY)) errors.push('ENCRYPTION_KEY must be set in production (32+ random chars)');
     if (env.COOKIE_SECURE !== 'true') warnings.push('Set COOKIE_SECURE=true for HTTPS');
     if (!env.SMTP_HOST) warnings.push('SMTP_HOST not set — email OTP and notifications disabled');
+    if (env.INTERNAL_API_URL) {
+      warnings.push('INTERNAL_API_URL is set — on Vercel with built-in /api routes, remove it to avoid broken contact/apply submits');
+    }
+    if (env.NEXT_PUBLIC_API_URL && /localhost|127\.0\.0\.1/i.test(env.NEXT_PUBLIC_API_URL)) {
+      warnings.push('NEXT_PUBLIC_API_URL points to localhost — remove it in production (browser uses same-origin /api)');
+    }
     if (env.FRONTEND_URL?.startsWith('http://')) warnings.push('FRONTEND_URL should use https:// in production');
     if (!fs.existsSync(path.join(root, 'server/dist/server.js'))) {
       warnings.push('API not built — run npm run build first');

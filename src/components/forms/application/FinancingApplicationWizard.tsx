@@ -189,11 +189,6 @@ export function FinancingApplicationWizard() {
   }, [reducedMotion]);
 
   const advance = useCallback(async (stepId: StepId, data: Record<string, unknown>) => {
-    const tentative: ApplicationState = { ...merged };
-    if (stepId === 'knowsSpecificVehicle') tentative.knowsSpecificVehicle = data.knowsSpecificVehicle as boolean;
-    if (stepId === 'tradeIn' || stepId === 'tradeInDetails') {
-      tentative.tradeIn = { ...merged.tradeIn, ...data, planning: String(data.planning || merged.tradeIn?.planning || '') };
-    }
     const nextSteps = getActiveSteps();
     const nextId = getNextStepId(nextSteps, stepId);
     setSaving(true);
@@ -206,7 +201,7 @@ export function FinancingApplicationWizard() {
     } finally {
       setSaving(false);
     }
-  }, [merged, saveStep, goToStep]);
+  }, [saveStep, goToStep]);
 
   const handleBack = () => {
     const prev = getPrevStepId(steps, currentStepId);

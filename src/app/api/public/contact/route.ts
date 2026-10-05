@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const type = (body.submissionType as string) || 'contact';
     const result = await createLeadFromBody(body, type === 'lead' ? 'lead' : 'contact');
-    return apiSuccess({ id: result.id }, 200);
+    return apiSuccess({ id: result.id, message: result.message });
   } catch (err) {
     console.error('[api/public/contact]', err);
     return apiError(err instanceof Error ? err.message : 'Failed to submit contact form', 500);

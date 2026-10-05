@@ -84,7 +84,6 @@ const BlogPostSchema = new Schema<IBlogPost>(
   { timestamps: true }
 );
 
-BlogPostSchema.index({ slug: 1 });
 BlogPostSchema.index({ status: 1, publishedAt: -1 });
 
 export const BlogCategory = mongoose.model<IBlogCategory>('BlogCategory', BlogCategorySchema);

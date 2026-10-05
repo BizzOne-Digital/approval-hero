@@ -49,21 +49,40 @@ export function LeadForm({ variant = 'compact', sourcePage = '/', consentText }:
     }
   };
 
+  const isHero = variant === 'hero';
+  const isFull = variant === 'full';
+
   if (success) {
     return (
-      <div className="text-center py-8">
-        <CheckCircle className="w-16 h-16 text-success mx-auto mb-4" />
-        <h3 className="font-display text-2xl text-white mb-2">Application Received</h3>
-        <p className="text-ice-blue">We will contact you shortly to discuss your options.</p>
+      <div
+        className={`text-center py-8 rounded-lg ${isHero ? 'bg-white/10 border border-white/20 p-6 md:p-8' : 'bg-white p-6 md:p-8 shadow-xl'}`}
+        role="status"
+        aria-live="polite"
+      >
+        <CheckCircle className={`w-16 h-16 mx-auto mb-4 ${isHero ? 'text-success' : 'text-success'}`} />
+        <h3 className={`font-display text-2xl mb-2 ${isHero ? 'text-white' : 'text-midnight'}`}>
+          Message Received
+        </h3>
+        <p className={isHero ? 'text-ice-blue' : 'text-gray-600'}>
+          Thank you — a financing specialist will contact you shortly to discuss your options.
+        </p>
       </div>
     );
   }
 
-  const isHero = variant === 'hero';
-  const isFull = variant === 'full';
+  const submitForm = handleSubmit(onSubmit);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={`${isHero ? 'bg-white/10 backdrop-blur-md border border-white/20 p-6 md:p-8 rounded-lg' : 'bg-white p-6 md:p-8 rounded-lg shadow-xl'}`}>
+    <form
+      method="get"
+      action={sourcePage || '/contact'}
+      onSubmit={(e) => {
+        e.preventDefault();
+        void submitForm(e);
+      }}
+      className={`${isHero ? 'bg-white/10 backdrop-blur-md border border-white/20 p-6 md:p-8 rounded-lg' : 'bg-white p-6 md:p-8 rounded-lg shadow-xl'}`}
+      noValidate
+    >
       <h3 className={`font-display text-xl md:text-2xl font-bold mb-6 ${isHero ? 'text-white' : 'text-midnight'}`}>
         Start Your Application
       </h3>
@@ -147,7 +166,12 @@ export function LeadForm({ variant = 'compact', sourcePage = '/', consentText }:
 
       {error && <p className="text-red-400 text-sm mt-3">{error}</p>}
 
-      <button type="submit" disabled={isSubmitting} className="btn-primary w-full mt-6">
+      <button
+        type="button"
+        disabled={isSubmitting}
+        onClick={() => void submitForm()}
+        className="btn-primary w-full mt-6"
+      >
         {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Application'}
       </button>
 

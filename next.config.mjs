@@ -19,7 +19,7 @@ const nextConfig = {
         source: '/:path*',
         has: [{ type: 'host', value: 'approvalhero.ca' }],
         destination: 'https://www.approvalhero.ca/:path*',
-        permanent: true,
+        statusCode: 308,
       },
     ];
   },
