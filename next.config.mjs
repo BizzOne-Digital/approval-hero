@@ -16,6 +16,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/faqs',
+        destination: '/testimonials-faqs#faq',
+        permanent: true,
+      },
+      {
         source: '/:path*',
         has: [{ type: 'host', value: 'approvalhero.ca' }],
         destination: 'https://www.approvalhero.ca/:path*',

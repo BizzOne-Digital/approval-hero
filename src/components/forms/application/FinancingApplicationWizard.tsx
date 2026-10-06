@@ -253,7 +253,7 @@ export function FinancingApplicationWizard() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/" className="btn-primary">Return to Home</Link>
-          <Link href="/faqs" className="btn-outline">View FAQs</Link>
+          <Link href="/testimonials-faqs#faq" className="btn-outline">View FAQs</Link>
         </div>
       </div>
     );
