@@ -3,8 +3,8 @@ import { getSiteBaseUrl } from '@/lib/siteUrl';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET() {
-  const base = getSiteBaseUrl();
+export async function GET(request: Request) {
+  const base = getSiteBaseUrl(request);
   const body = `User-Agent: *
 Allow: /
 Disallow: /admin/

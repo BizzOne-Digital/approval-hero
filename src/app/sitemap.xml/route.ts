@@ -4,8 +4,8 @@ import { sitemapToXml } from '@/lib/sitemapXml';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET() {
-  const entries = await buildSitemapEntries();
+export async function GET(request: Request) {
+  const entries = await buildSitemapEntries(request);
   const xml = sitemapToXml(entries);
 
   return new Response(xml, {

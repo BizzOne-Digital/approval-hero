@@ -39,8 +39,8 @@ const FALLBACK_SLUGS = [
   'blog',
 ];
 
-export async function buildSitemapEntries(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = getSiteBaseUrl();
+export async function buildSitemapEntries(request?: Request): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = getSiteBaseUrl(request);
   const seen = new Set<string>();
   const entries: SitemapEntry[] = [];
 
