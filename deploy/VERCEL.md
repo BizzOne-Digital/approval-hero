@@ -18,7 +18,7 @@ Go to **Vercel → Project → Settings → Environment Variables**
 
 | Name | Value |
 |------|--------|
-| `NEXT_PUBLIC_SITE_URL` | `https://approval-hero-nb2m.vercel.app` |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.approvalhero.ca` (used in sitemap.xml & robots.txt) |
 
 **Remove or fix if present:**
 

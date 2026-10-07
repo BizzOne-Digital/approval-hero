@@ -1,33 +1,9 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
+import { buildSitemapEntries } from '@/lib/sitemapEntries';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const pages = [
-    '',
-    'about',
-    'apply',
-    'services',
-    'approval-programs',
-    'how-it-works',
-    'why-choose-us',
-    'bad-credit',
-    'no-credit',
-    'bankruptcy',
-    'self-employed',
-    'newcomer',
-    'zero-down',
-    'gallery',
-    'testimonials-faqs',
-    'contact',
-    'privacy',
-    'terms',
-    'blog',
-  ];
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-  return pages.map((p) => ({
-    url: `${baseUrl}/${p}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: p === '' ? 1 : 0.8,
-  }));
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  return buildSitemapEntries();
 }
