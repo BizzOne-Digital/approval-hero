@@ -1,11 +1,27 @@
+const PRODUCTION_ORIGIN = 'https://www.approvalhero.ca';
+
+function isDevUrl(value: string | undefined): boolean {
+  if (!value) return true;
+  return /localhost|127\.0\.0\.1|^http:\/\//i.test(value);
+}
+
 /** Canonical public site origin (no trailing slash). */
 export function getSiteBaseUrl(): string {
-  const raw =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.FRONTEND_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+  const candidates = [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.FRONTEND_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL.replace(/^https?:\/\//, '')}`
+      : undefined,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+  ];
 
-  let base = raw.replace(/\/$/, '');
+  let base = candidates.find((c) => c && !isDevUrl(c)) || candidates.find(Boolean) || 'http://localhost:3000';
+  base = base.replace(/\/$/, '');
+
+  if (isDevUrl(base) && process.env.VERCEL_ENV === 'production') {
+    base = PRODUCTION_ORIGIN;
+  }
 
   try {
     const parsed = new URL(base);
@@ -15,7 +31,9 @@ export function getSiteBaseUrl(): string {
       base = parsed.origin;
     }
   } catch {
-    // keep raw base
+    if (process.env.VERCEL_ENV === 'production') {
+      base = PRODUCTION_ORIGIN;
+    }
   }
 
   return base;
