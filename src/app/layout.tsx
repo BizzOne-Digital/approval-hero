@@ -1,6 +1,7 @@
 import { Oswald, Inter } from 'next/font/google';
 import { Providers } from '@/components/providers/Providers';
 import { SmoothScroll } from '@/components/animations/SmoothScroll';
+import { getSiteBaseUrl } from '@/lib/siteUrl';
 import './globals.css';
 
 const oswald = Oswald({
@@ -16,6 +17,7 @@ const inter = Inter({
 });
 
 export const metadata = {
+  metadataBase: new URL(getSiteBaseUrl()),
   title: {
     default: 'Approval Hero | Vehicle Financing Assistance',
     template: '%s | Approval Hero',

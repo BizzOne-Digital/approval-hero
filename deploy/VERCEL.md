@@ -18,7 +18,7 @@ Go to **Vercel → Project → Settings → Environment Variables**
 
 | Name | Value |
 |------|--------|
-| `NEXT_PUBLIC_SITE_URL` | `https://www.approvalhero.ca` (used in sitemap.xml & robots.txt) |
+| `NEXT_PUBLIC_SITE_URL` | **`https://www.approvalhero.ca`** (sitemap, robots, canonical & Open Graph). Do **not** use `*.vercel.app` — production always canonicalizes to www.approvalhero.ca. |
 
 **Remove or fix if present:**
 

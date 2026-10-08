@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 import { publicApi } from '@/lib/api';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
+import { pageSeo } from '@/lib/seo';
 
 async function getSiteData() {
   try {
@@ -18,7 +19,11 @@ async function getSiteData() {
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   try {
     const { post } = await publicApi.getBlog(params.slug);
-    return { title: post.seoTitle || post.title, description: post.seoDescription || post.excerpt };
+    return pageSeo({
+      title: post.seoTitle || post.title,
+      description: post.seoDescription || post.excerpt,
+      path: `/blog/${params.slug}`,
+    });
   } catch {
     return { title: 'Article' };
   }

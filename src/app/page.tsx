@@ -4,6 +4,7 @@ import { HomeHero } from '@/components/sections/HomeHero';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
 import type { Metadata } from 'next';
+import { pageSeo } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -33,12 +34,13 @@ async function getSiteData() {
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await publicApi.getPage('home');
-    return {
+    return pageSeo({
       title: page.seoTitle || 'Approval Hero | Vehicle Financing Assistance',
       description: page.seoDescription,
-    };
+      path: '/',
+    });
   } catch {
-    return {};
+    return pageSeo({ path: '/' });
   }
 }
 

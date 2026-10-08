@@ -4,6 +4,7 @@ import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
 import type { GalleryImage } from '@/lib/types';
 import type { Metadata } from 'next';
+import { pageSeo } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -50,10 +51,11 @@ async function getPage(slug: string) {
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const page = await getPage(params.slug);
   if (!page) return { title: 'Page Not Found' };
-  return {
+  return pageSeo({
     title: page.seoTitle || page.title,
     description: page.seoDescription,
-  };
+    path: `/${params.slug}`,
+  });
 }
 
 export default async function CmsPage({ params }: { params: { slug: string } }) {

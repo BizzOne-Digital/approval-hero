@@ -15,9 +15,21 @@ export function sitemapToXml(entries: MetadataRoute.Sitemap): string {
       const lastmod = item.lastModified ? new Date(item.lastModified).toISOString() : new Date().toISOString();
       const changefreq = item.changeFrequency || 'weekly';
       const priority = item.priority ?? 0.5;
-      return `<url><loc>${escapeXml(item.url)}</loc><lastmod>${lastmod}</lastmod><changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`;
+      return [
+        '  <url>',
+        `    <loc>${escapeXml(item.url)}</loc>`,
+        `    <lastmod>${lastmod}</lastmod>`,
+        `    <changefreq>${changefreq}</changefreq>`,
+        `    <priority>${priority}</priority>`,
+        '  </url>',
+      ].join('\n');
     })
-    .join('');
+    .join('\n');
 
-  return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${body}</urlset>`;
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    body,
+    '</urlset>',
+  ].join('\n');
 }

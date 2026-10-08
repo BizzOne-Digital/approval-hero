@@ -7,6 +7,7 @@ import { publicApi } from '@/lib/api';
 import { SectionSideImage } from '@/components/sections/SectionSideImage';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
+import { pageSeo } from '@/lib/seo';
 import { CheckCircle } from 'lucide-react';
 
 async function getSiteData() {
@@ -21,10 +22,11 @@ async function getSiteData() {
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   try {
     const service = await publicApi.getService(params.slug);
-    return {
+    return pageSeo({
       title: service.detailPage?.seoTitle || service.title,
       description: service.detailPage?.seoDescription || service.shortDescription,
-    };
+      path: `/services/${params.slug}`,
+    });
   } catch {
     return { title: 'Service' };
   }
