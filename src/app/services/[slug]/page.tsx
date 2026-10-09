@@ -19,22 +19,26 @@ async function getSiteData() {
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
+
+export async function generateMetadata({ params }: SlugRouteParams): Promise<Metadata> {
   try {
-    const service = await publicApi.getService(params.slug);
+    const slug = await resolveRouteSlug(params);
+    const service = await publicApi.getService(slug);
     return pageSeo({
       title: service.detailPage?.seoTitle || service.title,
       description: service.detailPage?.seoDescription || service.shortDescription,
-      path: `/services/${params.slug}`,
+      path: `/services/${slug}`,
     });
   } catch {
     return { title: 'Service' };
   }
 }
 
-export default async function ServiceDetailPage({ params }: { params: { slug: string } }) {
+export default async function ServiceDetailPage({ params }: SlugRouteParams) {
+  const slug = await resolveRouteSlug(params);
   const [service, siteData] = await Promise.all([
-    publicApi.getService(params.slug).catch(() => null),
+    publicApi.getService(slug).catch(() => null),
     getSiteData(),
   ]);
 

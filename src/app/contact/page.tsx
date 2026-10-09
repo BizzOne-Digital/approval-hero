@@ -5,6 +5,7 @@ import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { LeadForm } from '@/components/forms/LeadForm';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
+import { getPublishedPageBySlug } from '@/lib/cms/pages';
 import { resolveSiteEmail } from '@/lib/siteEmail';
 import type { Metadata } from 'next';
 import { Mail, MapPin, Clock } from 'lucide-react';
@@ -30,10 +31,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const [page, siteData] = await Promise.all([
-    publicApi.getPage('contact').catch(() => null),
-    getSiteData(),
-  ]);
+  const [page, siteData] = await Promise.all([getPublishedPageBySlug('contact'), getSiteData()]);
 
   const general = siteData.settings?.general;
   const cmsSections = page

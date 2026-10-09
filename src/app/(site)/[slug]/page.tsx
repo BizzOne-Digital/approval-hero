@@ -2,6 +2,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
+import { getPublishedPageBySlug } from '@/lib/cms/pages';
 import type { GalleryImage } from '@/lib/types';
 import type { Metadata } from 'next';
 import { pageSeo } from '@/lib/seo';
@@ -40,28 +41,24 @@ async function getGalleryImages(): Promise<GalleryImage[]> {
   }
 }
 
-async function getPage(slug: string) {
-  try {
-    return await publicApi.getPage(slug);
-  } catch {
-    return null;
-  }
-}
+import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const page = await getPage(params.slug);
+export async function generateMetadata({ params }: SlugRouteParams): Promise<Metadata> {
+  const slug = await resolveRouteSlug(params);
+  const page = await getPublishedPageBySlug(slug);
   if (!page) return { title: 'Page Not Found' };
   return pageSeo({
     title: page.seoTitle || page.title,
     description: page.seoDescription,
-    path: `/${params.slug}`,
+    path: `/${slug}`,
   });
 }
 
-export default async function CmsPage({ params }: { params: { slug: string } }) {
-  const needsGallery = params.slug === 'gallery';
+export default async function CmsPage({ params }: SlugRouteParams) {
+  const slug = await resolveRouteSlug(params);
+  const needsGallery = slug === 'gallery';
   const [page, siteData, galleryImages] = await Promise.all([
-    getPage(params.slug),
+    getPublishedPageBySlug(slug),
     getSiteData(),
     needsGallery ? getGalleryImages() : Promise.resolve([]),
   ]);

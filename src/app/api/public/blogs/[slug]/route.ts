@@ -1,16 +1,15 @@
 import { apiError, apiSuccess } from '@/lib/api-route';
+import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
 import { connectDB } from '@/lib/db';
 import { BlogPost } from '@server/models/Blog';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(
-  _req: Request,
-  { params }: { params: { slug: string } },
-) {
+export async function GET(_req: Request, context: SlugRouteParams) {
   try {
+    const slug = await resolveRouteSlug(context.params);
     await connectDB();
-    const post = await BlogPost.findOne({ slug: params.slug, status: 'published' })
+    const post = await BlogPost.findOne({ slug, status: 'published' })
       .populate('categoryId', 'name slug')
       .lean();
     if (!post) return apiError('Blog post not found', 404);

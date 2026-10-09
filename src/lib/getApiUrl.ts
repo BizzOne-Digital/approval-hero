@@ -16,14 +16,14 @@ export function getApiBaseUrl(): string {
     return `${window.location.origin}/api`;
   }
 
-  // Explicit public URL (external API host) — ignore localhost on Vercel SSR
-  if (publicUrl && !(process.env.VERCEL_URL && isLocalhost)) {
-    return normalize(publicUrl);
-  }
-
-  // Vercel: use built-in Next.js API routes on same domain
+  // Vercel SSR: same deployment API (avoid custom-domain self-fetch failures).
   if (process.env.VERCEL_URL) {
     return normalize(`https://${process.env.VERCEL_URL}`);
+  }
+
+  // Explicit public URL (external API host)
+  if (publicUrl && !isLocalhost) {
+    return normalize(publicUrl);
   }
 
   // Server-side fallback

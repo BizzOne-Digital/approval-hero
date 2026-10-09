@@ -3,6 +3,7 @@ import { Footer } from '@/components/layout/Footer';
 import { HomeHero } from '@/components/sections/HomeHero';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
+import { getPublishedPageBySlug } from '@/lib/cms/pages';
 import type { Metadata } from 'next';
 import { pageSeo } from '@/lib/seo';
 
@@ -33,7 +34,8 @@ async function getSiteData() {
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await publicApi.getPage('home');
+    const page = await getPublishedPageBySlug('home');
+    if (!page) throw new Error('missing home');
     return pageSeo({
       title: page.seoTitle || 'Approval Hero | Vehicle Financing Assistance',
       description: page.seoDescription,
@@ -45,12 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  let page = null;
-  try {
-    page = await publicApi.getPage('home');
-  } catch {
-    // fallback
-  }
+  const page = await getPublishedPageBySlug('home');
 
   const siteData = await getSiteData();
   const sections = page

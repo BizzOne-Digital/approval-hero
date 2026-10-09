@@ -4,13 +4,13 @@ import { Page } from '@server/models/Page';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(
-  _req: Request,
-  { params }: { params: { slug: string } },
-) {
+import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
+
+export async function GET(_req: Request, context: SlugRouteParams) {
   try {
+    const slug = await resolveRouteSlug(context.params);
     await connectDB();
-    const page = await Page.findOne({ slug: params.slug, status: 'published' }).lean();
+    const page = await Page.findOne({ slug, status: 'published' }).lean();
     if (!page) return apiError('Page not found', 404);
     return apiSuccess(page);
   } catch (err) {

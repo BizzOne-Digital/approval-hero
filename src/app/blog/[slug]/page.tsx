@@ -16,22 +16,26 @@ async function getSiteData() {
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
+
+export async function generateMetadata({ params }: SlugRouteParams): Promise<Metadata> {
   try {
-    const { post } = await publicApi.getBlog(params.slug);
+    const slug = await resolveRouteSlug(params);
+    const { post } = await publicApi.getBlog(slug);
     return pageSeo({
       title: post.seoTitle || post.title,
       description: post.seoDescription || post.excerpt,
-      path: `/blog/${params.slug}`,
+      path: `/blog/${slug}`,
     });
   } catch {
     return { title: 'Article' };
   }
 }
 
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
+export default async function BlogDetailPage({ params }: SlugRouteParams) {
+  const slug = await resolveRouteSlug(params);
   const [blogData, siteData] = await Promise.all([
-    publicApi.getBlog(params.slug).catch(() => null),
+    publicApi.getBlog(slug).catch(() => null),
     getSiteData(),
   ]);
 
