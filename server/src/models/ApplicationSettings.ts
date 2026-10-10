@@ -77,4 +77,6 @@ const ApplicationSettingsSchema = new Schema<IApplicationSettings>(
   { timestamps: true },
 );
 
-export const ApplicationSettings = mongoose.model<IApplicationSettings>('ApplicationSettings', ApplicationSettingsSchema);
+export const ApplicationSettings =
+  (mongoose.models.ApplicationSettings as mongoose.Model<IApplicationSettings>) ||
+  mongoose.model<IApplicationSettings>('ApplicationSettings', ApplicationSettingsSchema);

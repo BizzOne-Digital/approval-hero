@@ -16,6 +16,9 @@ export function formatPhone(phone: string): string {
 export function getImageUrl(url: string): string {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  const base = process.env.NEXT_PUBLIC_UPLOADS_URL || 'http://localhost:5000';
-  return `${base}${url.startsWith('/') ? '' : '/'}${url}`;
+  if (url.startsWith('/uploads/')) {
+    const base = process.env.NEXT_PUBLIC_UPLOADS_URL || 'http://localhost:5000';
+    return `${base}${url}`;
+  }
+  return url.startsWith('/') ? url : `/${url}`;
 }

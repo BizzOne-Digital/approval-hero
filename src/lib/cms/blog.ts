@@ -1,4 +1,5 @@
 import { connectDB } from '@/lib/db';
+import { serializeDoc } from '@/lib/cms/serializeDoc';
 import type { BlogPost } from '@/lib/types';
 import { BlogCategory, BlogPost as BlogPostModel } from '@server/models/Blog';
 
@@ -23,11 +24,11 @@ export async function getPublishedBlogListing(limit = 50): Promise<BlogListing> 
         .populate('categoryId', 'name slug')
         .lean(),
     ]);
-    return {
+    return serializeDoc({
       posts: posts as unknown as BlogPost[],
       categories,
       featured: featured ? (featured as unknown as BlogPost) : null,
-    };
+    });
   } catch (err) {
     console.error('[cms/getPublishedBlogListing]', err);
     return { posts: [], categories: [], featured: null };
@@ -52,10 +53,10 @@ export async function getPublishedBlogBySlug(
       .limit(3)
       .lean();
 
-    return {
+    return serializeDoc({
       post: post as unknown as BlogPost,
       related: related as unknown as BlogPost[],
-    };
+    });
   } catch (err) {
     console.error('[cms/getPublishedBlogBySlug]', slug, err);
     return null;

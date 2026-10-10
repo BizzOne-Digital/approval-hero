@@ -38,4 +38,6 @@ const MediaAssetSchema = new Schema<IMediaAsset>(
 MediaAssetSchema.index({ folder: 1 });
 MediaAssetSchema.index({ filename: 1 });
 
-export const MediaAsset = mongoose.model<IMediaAsset>('MediaAsset', MediaAssetSchema);
+export const MediaAsset =
+  (mongoose.models.MediaAsset as mongoose.Model<IMediaAsset>) ||
+  mongoose.model<IMediaAsset>('MediaAsset', MediaAssetSchema);

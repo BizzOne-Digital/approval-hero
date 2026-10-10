@@ -173,4 +173,6 @@ ApplicationSchema.index({ status: 1, createdAt: -1 });
 ApplicationSchema.index({ phoneSearchHash: 1 });
 ApplicationSchema.index({ 'utmData.source': 1 });
 
-export const Application = mongoose.model<IApplication>('Application', ApplicationSchema);
+export const Application =
+  (mongoose.models.Application as mongoose.Model<IApplication>) ||
+  mongoose.model<IApplication>('Application', ApplicationSchema);

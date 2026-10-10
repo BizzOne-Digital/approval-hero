@@ -91,4 +91,5 @@ const LeadSchema = new Schema<ILead>(
 LeadSchema.index({ status: 1, createdAt: -1 });
 LeadSchema.index({ email: 1 });
 
-export const Lead = mongoose.model<ILead>('Lead', LeadSchema);
+export const Lead =
+  (mongoose.models.Lead as mongoose.Model<ILead>) || mongoose.model<ILead>('Lead', LeadSchema);

@@ -25,4 +25,6 @@ const ActivityLogSchema = new Schema<IActivityLog>(
 ActivityLogSchema.index({ createdAt: -1 });
 ActivityLogSchema.index({ adminId: 1 });
 
-export const ActivityLog = mongoose.model<IActivityLog>('ActivityLog', ActivityLogSchema);
+export const ActivityLog =
+  (mongoose.models.ActivityLog as mongoose.Model<IActivityLog>) ||
+  mongoose.model<IActivityLog>('ActivityLog', ActivityLogSchema);

@@ -56,5 +56,9 @@ const GalleryImageSchema = new Schema<IGalleryImage>(
   { timestamps: true }
 );
 
-export const GalleryCategory = mongoose.model<IGalleryCategory>('GalleryCategory', GalleryCategorySchema);
-export const GalleryImage = mongoose.model<IGalleryImage>('GalleryImage', GalleryImageSchema);
+export const GalleryCategory =
+  (mongoose.models.GalleryCategory as mongoose.Model<IGalleryCategory>) ||
+  mongoose.model<IGalleryCategory>('GalleryCategory', GalleryCategorySchema);
+export const GalleryImage =
+  (mongoose.models.GalleryImage as mongoose.Model<IGalleryImage>) ||
+  mongoose.model<IGalleryImage>('GalleryImage', GalleryImageSchema);

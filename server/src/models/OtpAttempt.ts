@@ -29,4 +29,6 @@ const OtpAttemptSchema = new Schema<IOtpAttempt>(
 
 OtpAttemptSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-export const OtpAttempt = mongoose.model<IOtpAttempt>('OtpAttempt', OtpAttemptSchema);
+export const OtpAttempt =
+  (mongoose.models.OtpAttempt as mongoose.Model<IOtpAttempt>) ||
+  mongoose.model<IOtpAttempt>('OtpAttempt', OtpAttemptSchema);

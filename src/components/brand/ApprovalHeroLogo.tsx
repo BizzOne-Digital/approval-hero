@@ -2,14 +2,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { cn, getImageUrl } from '@/lib/utils';
 
+/** Shield mark for header, footer, and app chrome */
+export const DEFAULT_SITE_LOGO_ICON = '/images/logo-icon.png';
+
+/** Full horizontal lockup (optional CMS / print use) */
+export const DEFAULT_SITE_LOGO = '/images/logo.png';
+
 interface ApprovalHeroLogoProps {
   className?: string;
   height?: number;
-  /** Use on dark backgrounds — shield icon + white wordmark */
+  /** Dark navy header/footer — wordmark renders in white */
   onDark?: boolean;
-  /** CMS branding (darkLogo / logo / favicon) */
   iconSrc?: string;
-  wordmarkSrc?: string;
+  /** Hide “APPROVAL HERO” beside the shield */
+  iconOnly?: boolean;
 }
 
 export function ApprovalHeroLogo({
@@ -17,81 +23,67 @@ export function ApprovalHeroLogo({
   height = 48,
   onDark = false,
   iconSrc,
-  wordmarkSrc,
+  iconOnly = false,
 }: ApprovalHeroLogoProps) {
-  if (onDark) {
-    if (wordmarkSrc) {
-      const width = Math.round(height * 3.8);
-      return (
-        <Image
-          src={getImageUrl(wordmarkSrc)}
-          alt="Approval Hero"
-          width={width}
-          height={height}
-          className={cn('h-auto object-contain object-left', className)}
-          style={{ height, width: 'auto', maxWidth: width }}
-          priority
-        />
-      );
-    }
+  const src = getImageUrl(iconSrc || DEFAULT_SITE_LOGO_ICON);
+  const iconWidth = Math.round(height * 0.92);
 
-    const iconSize = Math.round(height * 0.9);
-    return (
-      <div className={cn('flex items-center gap-2.5', className)}>
-        <Image
-          src={getImageUrl(iconSrc || '/images/favicon.png')}
-          alt=""
-          width={iconSize}
-          height={iconSize}
-          className="object-contain flex-shrink-0"
-          style={{ width: iconSize, height: iconSize }}
-          priority
-        />
-        <span
-          className="font-display font-bold text-white uppercase tracking-[0.12em] leading-none whitespace-nowrap"
-          style={{ fontSize: height * 0.36 }}
-        >
-          APPROVAL HERO
-        </span>
-      </div>
-    );
-  }
-
-  const width = Math.round(height * 3.8);
   return (
-    <Image
-      src={getImageUrl(wordmarkSrc || iconSrc || '/images/logo.png')}
-      alt="Approval Hero"
-      width={width}
-      height={height}
-      className={cn('h-auto object-contain object-left', className)}
-      style={{ height, width: 'auto', maxWidth: width }}
-      priority
-    />
+    <span className={cn('inline-flex items-center gap-2.5 sm:gap-3', className)}>
+      <Image
+        src={src}
+        alt=""
+        width={iconWidth}
+        height={height}
+        className="h-auto w-auto object-contain flex-shrink-0"
+        style={{ height, width: iconWidth }}
+        priority
+        aria-hidden
+      />
+      {!iconOnly && (
+        <span
+          className={cn(
+            'font-display font-bold uppercase leading-none tracking-[0.06em]',
+            onDark ? 'text-white' : 'text-[#04152D]',
+            height >= 44 ? 'text-lg sm:text-xl' : 'text-base sm:text-lg'
+          )}
+        >
+          Approval Hero
+        </span>
+      )}
+      <span className="sr-only">Approval Hero</span>
+    </span>
   );
 }
 
 export function HeaderLogoLink({
   height = 48,
   iconSrc,
-  wordmarkSrc,
 }: {
   height?: number;
   iconSrc?: string;
-  wordmarkSrc?: string;
 }) {
   return (
     <Link href="/" className="flex items-center flex-shrink-0">
-      <ApprovalHeroLogo height={height} onDark iconSrc={iconSrc} wordmarkSrc={wordmarkSrc} />
+      <ApprovalHeroLogo height={height} onDark iconSrc={iconSrc} />
     </Link>
   );
 }
 
+function isCmsBrandIcon(url?: string): url is string {
+  if (!url?.trim()) return false;
+  const lower = url.toLowerCase();
+  if (lower.includes('unsplash.com') || lower.includes('hero-car')) return false;
+  if (lower.includes('logo-icon')) return true;
+  if (lower.includes('/uploads/') && lower.includes('logo')) return true;
+  return false;
+}
+
 export function brandingLogoUrls(settings?: {
-  branding?: { logo?: { url?: string }; lightLogo?: { url?: string }; darkLogo?: { url?: string }; favicon?: { url?: string } };
+  branding?: { logo?: { url?: string }; lightLogo?: { url?: string }; darkLogo?: { url?: string } };
 }) {
   const b = settings?.branding;
-  const iconSrc = b?.favicon?.url || b?.logo?.url || b?.darkLogo?.url;
-  const wordmarkSrc = b?.darkLogo?.url || b?.logo?.url || b?.lightLogo?.url;
-  return { iconSrc, wordmarkSrc };
+  const candidates = [b?.logo?.url, b?.lightLogo?.url, b?.darkLogo?.url];
+  const iconSrc = candidates.find(isCmsBrandIcon);
+  return { iconSrc };
 }

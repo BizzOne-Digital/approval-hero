@@ -1,9 +1,10 @@
 import type { MetadataRoute } from 'next';
 import { connectDB } from '@/lib/db';
 import { getSiteBaseUrl } from '@/lib/siteUrl';
-import { Page } from '@server/models/Page';
-import { Service } from '@server/models/Service';
-import { BlogPost } from '@server/models/Blog';
+
+function hasMongoUri(): boolean {
+  return Boolean(process.env.MONGO_URI || process.env.MONGODB_URI);
+}
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 
@@ -39,8 +40,32 @@ const FALLBACK_SLUGS = [
   'blog',
 ];
 
+function buildFallbackSitemap(baseUrl: string): MetadataRoute.Sitemap {
+  const seen = new Set<string>();
+  const entries: SitemapEntry[] = [];
+  const add = (path: string, lastModified: Date, priority: number, changeFrequency: SitemapEntry['changeFrequency'] = 'weekly') => {
+    const normalized = path === '/' ? '/' : path.replace(/\/+$/, '') || '/';
+    const url = normalized === '/' ? `${baseUrl}/` : `${baseUrl}${normalized.startsWith('/') ? normalized : `/${normalized}`}`;
+    if (seen.has(url)) return;
+    seen.add(url);
+    entries.push(entry(url, lastModified, priority, changeFrequency));
+  };
+  for (const slug of FALLBACK_SLUGS) {
+    const path = slug === 'apply' ? '/apply' : pagePath(slug === 'home' ? 'home' : slug);
+    add(path, new Date(), path === '/' ? 1 : 0.8);
+  }
+  add('/apply', new Date(), 0.9);
+  entries.sort((a, b) => a.url.localeCompare(b.url));
+  return entries;
+}
+
 export async function buildSitemapEntries(request?: Request): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getSiteBaseUrl(request);
+
+  if (!hasMongoUri()) {
+    return buildFallbackSitemap(baseUrl);
+  }
+
   const seen = new Set<string>();
   const entries: SitemapEntry[] = [];
 
@@ -54,6 +79,11 @@ export async function buildSitemapEntries(request?: Request): Promise<MetadataRo
 
   try {
     await connectDB();
+    const [{ Page }, { Service }, { BlogPost }] = await Promise.all([
+      import('@server/models/Page'),
+      import('@server/models/Service'),
+      import('@server/models/Blog'),
+    ]);
 
     const [pages, services, posts] = await Promise.all([
       Page.find({ status: 'published', noIndex: { $ne: true } }).select('slug updatedAt').lean(),
@@ -89,11 +119,7 @@ export async function buildSitemapEntries(request?: Request): Promise<MetadataRo
       add(`/blog/${slug}`, modified, 0.6, 'monthly');
     }
   } catch {
-    for (const slug of FALLBACK_SLUGS) {
-      const path = slug === 'apply' ? '/apply' : pagePath(slug === 'home' ? 'home' : slug);
-      add(path, new Date(), path === '/' ? 1 : 0.8);
-    }
-    add('/apply', new Date(), 0.9);
+    return buildFallbackSitemap(baseUrl);
   }
 
   entries.sort((a, b) => a.url.localeCompare(b.url));

@@ -230,9 +230,9 @@ async function seedSiteSettings(): Promise<void> {
       twitter: 'https://twitter.com/approvalhero',
     },
     branding: {
-      logo: img(IMAGES.heroCar, 'Approval Hero logo'),
-      lightLogo: img(IMAGES.heroCar, 'Approval Hero light logo'),
-      darkLogo: img(IMAGES.heroCar, 'Approval Hero dark logo'),
+      logo: { url: '/images/logo-icon.png', alt: 'Approval Hero logo' },
+      lightLogo: { url: '/images/logo-icon.png', alt: 'Approval Hero light logo' },
+      darkLogo: { url: '/images/logo-icon.png', alt: 'Approval Hero dark logo' },
       favicon: img(IMAGES.keys, 'Approval Hero favicon'),
       primaryColor: '#04152D',
       secondaryColor: '#0866FF',

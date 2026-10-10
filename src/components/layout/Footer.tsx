@@ -94,7 +94,7 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
       }),
   }));
 
-  const { iconSrc, wordmarkSrc } = brandingLogoUrls(settings);
+  const { iconSrc } = brandingLogoUrls(settings);
 
   return (
     <footer className="bg-[#030d1a] text-white border-t border-white/5">
@@ -102,7 +102,7 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           <div className="lg:col-span-4">
             <Link href="/" className="inline-block mb-6">
-              <ApprovalHeroLogo height={48} onDark iconSrc={iconSrc} wordmarkSrc={wordmarkSrc} />
+              <ApprovalHeroLogo height={44} onDark iconSrc={iconSrc} />
             </Link>
             <p className="text-white/55 text-sm leading-relaxed mb-6 max-w-sm">
               {footer?.description || 'Vehicle financing support for drivers across Ontario.'}

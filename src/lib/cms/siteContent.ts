@@ -1,4 +1,5 @@
 import { connectDB } from '@/lib/db';
+import { serializeDoc } from '@/lib/cms/serializeDoc';
 import type { FAQ, NavItem, Service, SiteSettings, Testimonial } from '@/lib/types';
 import { FAQ as FAQModel } from '@server/models/FAQ';
 import { Navigation } from '@server/models/Navigation';
@@ -10,7 +11,7 @@ export async function getPublishedTestimonials(): Promise<Testimonial[]> {
   try {
     await connectDB();
     const rows = await TestimonialModel.find({ status: 'published' }).sort('order').lean();
-    return rows as unknown as Testimonial[];
+    return serializeDoc(rows as unknown as Testimonial[]);
   } catch (err) {
     console.error('[cms/getPublishedTestimonials]', err);
     return [];
@@ -24,7 +25,7 @@ export async function getPublishedFaqs(): Promise<FAQ[]> {
       .populate('categoryId', 'name slug')
       .sort('order')
       .lean();
-    return rows as unknown as FAQ[];
+    return serializeDoc(rows as unknown as FAQ[]);
   } catch (err) {
     console.error('[cms/getPublishedFaqs]', err);
     return [];
@@ -35,7 +36,7 @@ export async function getPublishedServices(): Promise<Service[]> {
   try {
     await connectDB();
     const rows = await ServiceModel.find({ status: 'published' }).sort('order').lean();
-    return rows as unknown as Service[];
+    return serializeDoc(rows as unknown as Service[]);
   } catch (err) {
     console.error('[cms/getPublishedServices]', err);
     return [];
@@ -46,7 +47,7 @@ export async function getSiteSettingsDocument(): Promise<SiteSettings | undefine
   try {
     await connectDB();
     const settings = await SiteSettingsModel.findOne().lean();
-    return settings ? (settings as unknown as SiteSettings) : undefined;
+    return settings ? serializeDoc(settings as unknown as SiteSettings) : undefined;
   } catch (err) {
     console.error('[cms/getSiteSettingsDocument]', err);
     return undefined;
@@ -56,7 +57,8 @@ export async function getSiteSettingsDocument(): Promise<SiteSettings | undefine
 export async function getNavigationDocument() {
   try {
     await connectDB();
-    return Navigation.findOne().lean();
+    const nav = await Navigation.findOne().lean();
+    return nav ? serializeDoc(nav) : null;
   } catch (err) {
     console.error('[cms/getNavigationDocument]', err);
     return null;

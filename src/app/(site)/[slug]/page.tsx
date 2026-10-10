@@ -2,7 +2,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
-import { getPublishedPageBySlug } from '@/lib/cms/pages';
+import { getPublishedPageBySlug, isDatabaseConfigured } from '@/lib/cms/pages';
 import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import type { GalleryImage } from '@/lib/types';
 import type { Metadata } from 'next';
@@ -43,13 +43,29 @@ export default async function CmsPage({ params }: SlugRouteParams) {
   ]);
 
   if (!page) {
+    const missingDb = !isDatabaseConfigured();
     return (
-      <div className="min-h-screen flex items-center justify-center bg-midnight">
-        <div className="text-center">
-          <h1 className="font-display text-6xl text-electric mb-4">404</h1>
-          <p className="text-white/60">Page not found</p>
-        </div>
-      </div>
+      <>
+        <Header settings={siteData.settings} navItems={siteData.navItems} />
+        <main id="main-content" className="min-h-[70vh] flex items-center justify-center bg-midnight pt-24 pb-16 px-5">
+          <div className="text-center max-w-lg">
+            <h1 className="font-display text-6xl text-electric mb-4">404</h1>
+            <p className="text-white/60 mb-4">
+              {missingDb
+                ? 'This page could not load because the database is not connected locally.'
+                : 'Page not found or not published.'}
+            </p>
+            {missingDb && (
+              <p className="text-white/45 text-sm leading-relaxed">
+                Copy <code className="text-electric/90">.env.example</code> to <code className="text-electric/90">.env</code>, set{' '}
+                <code className="text-electric/90">MONGO_URI</code>, then run{' '}
+                <code className="text-electric/90">npm run dev</code> (web + API). Use the same Atlas URI as Vercel production.
+              </p>
+            )}
+          </div>
+        </main>
+        <Footer settings={siteData.settings} footerColumns={siteData.footerColumns as never[]} />
+      </>
     );
   }
 

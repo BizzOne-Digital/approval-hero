@@ -24,4 +24,6 @@ const ApplicationActivitySchema = new Schema<IApplicationActivity>(
   { timestamps: { createdAt: true, updatedAt: false } },
 );
 
-export const ApplicationActivity = mongoose.model<IApplicationActivity>('ApplicationActivity', ApplicationActivitySchema);
+export const ApplicationActivity =
+  (mongoose.models.ApplicationActivity as mongoose.Model<IApplicationActivity>) ||
+  mongoose.model<IApplicationActivity>('ApplicationActivity', ApplicationActivitySchema);
