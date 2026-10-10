@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { HeaderLogoLink } from '@/components/brand/ApprovalHeroLogo';
+import { brandingLogoUrls, HeaderLogoLink } from '@/components/brand/ApprovalHeroLogo';
 import type { NavItem, SiteSettings } from '@/lib/types';
 
 const DEFAULT_NAV: NavItem[] = [
@@ -41,6 +41,7 @@ export function Header({ settings, navItems }: HeaderProps) {
 
   const ctaLink = settings?.header?.ctaLink || '/apply';
   const ctaLabel = settings?.header?.ctaLabel || 'Apply Now';
+  const { iconSrc, wordmarkSrc } = brandingLogoUrls(settings);
 
   const nav = (navItems?.filter((n) => n.isVisible).length ? navItems : DEFAULT_NAV)
     .filter((n) => n.isVisible)
@@ -65,7 +66,7 @@ export function Header({ settings, navItems }: HeaderProps) {
       >
         <div className="max-w-[1400px] mx-auto px-5 lg:px-8 flex items-center gap-6">
           {/* Logo */}
-          <HeaderLogoLink height={scrolled ? 38 : 44} />
+          <HeaderLogoLink height={scrolled ? 38 : 44} iconSrc={iconSrc} wordmarkSrc={wordmarkSrc} />
 
           {/* Center nav — SS1 order */}
           <nav className="hidden lg:flex flex-1 items-center justify-center gap-4 xl:gap-5 2xl:gap-7">

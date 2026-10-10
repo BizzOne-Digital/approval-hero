@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ApprovalHeroLogo } from '@/components/brand/ApprovalHeroLogo';
+import { ApprovalHeroLogo, brandingLogoUrls } from '@/components/brand/ApprovalHeroLogo';
 import { resolveSiteEmail, SITE_CONTACT_EMAIL } from '@/lib/siteEmail';
 import type { SiteSettings } from '@/lib/types';
 
@@ -94,13 +94,15 @@ export function Footer({ settings, footerColumns = [] }: FooterProps) {
       }),
   }));
 
+  const { iconSrc, wordmarkSrc } = brandingLogoUrls(settings);
+
   return (
     <footer className="bg-[#030d1a] text-white border-t border-white/5">
       <div className="max-w-[1400px] mx-auto px-5 lg:px-8 py-14 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           <div className="lg:col-span-4">
             <Link href="/" className="inline-block mb-6">
-              <ApprovalHeroLogo height={48} onDark />
+              <ApprovalHeroLogo height={48} onDark iconSrc={iconSrc} wordmarkSrc={wordmarkSrc} />
             </Link>
             <p className="text-white/55 text-sm leading-relaxed mb-6 max-w-sm">
               {footer?.description || 'Vehicle financing support for drivers across Ontario.'}

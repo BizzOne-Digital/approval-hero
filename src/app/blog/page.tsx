@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { BlogPostCard } from '@/components/blog/BlogPostCard';
-import { publicApi } from '@/lib/api';
+import { getPublishedBlogListing } from '@/lib/cms/blog';
 import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
@@ -14,10 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const [blogData, siteData] = await Promise.all([
-    publicApi.getBlogs().catch(() => ({ posts: [], categories: [], featured: null })),
-    loadPublicSiteData(),
-  ]);
+  const [blogData, siteData] = await Promise.all([getPublishedBlogListing(), loadPublicSiteData()]);
 
   const { posts, featured } = blogData;
   const gridPosts = featured ? posts.filter((post) => post.slug !== featured.slug) : posts;
@@ -70,9 +67,13 @@ export default async function BlogPage() {
         <section className="section-padding">
           <div className="container-custom">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {gridPosts.map((post, i) => (
-                <BlogPostCard key={post._id} post={post} priority={i < 3} />
-              ))}
+              {gridPosts.length === 0 ? (
+                <p className="text-gray-500 col-span-full text-center">Blog posts coming soon.</p>
+              ) : (
+                gridPosts.map((post, i) => (
+                  <BlogPostCard key={post._id} post={post} priority={i < 3} />
+                ))
+              )}
             </div>
           </div>
         </section>

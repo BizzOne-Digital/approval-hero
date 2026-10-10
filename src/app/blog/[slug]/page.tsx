@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { publicApi } from '@/lib/api';
+import { getPublishedBlogBySlug } from '@/lib/cms/blog';
 import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
@@ -13,7 +13,9 @@ import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
 export async function generateMetadata({ params }: SlugRouteParams): Promise<Metadata> {
   try {
     const slug = await resolveRouteSlug(params);
-    const { post } = await publicApi.getBlog(slug);
+    const data = await getPublishedBlogBySlug(slug);
+    if (!data) throw new Error('not found');
+    const { post } = data;
     return pageSeo({
       title: post.seoTitle || post.title,
       description: post.seoDescription || post.excerpt,
@@ -27,7 +29,7 @@ export async function generateMetadata({ params }: SlugRouteParams): Promise<Met
 export default async function BlogDetailPage({ params }: SlugRouteParams) {
   const slug = await resolveRouteSlug(params);
   const [blogData, siteData] = await Promise.all([
-    publicApi.getBlog(slug).catch(() => null),
+    getPublishedBlogBySlug(slug),
     loadPublicSiteData(),
   ]);
 

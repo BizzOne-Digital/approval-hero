@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
-import { publicApi } from '@/lib/api';
 import { loadPublicSiteData } from '@/lib/cms/siteContent';
+import { getPublishedServiceBySlug } from '@/lib/cms/services';
 import { SectionSideImage } from '@/components/sections/SectionSideImage';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
@@ -16,7 +16,8 @@ import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
 export async function generateMetadata({ params }: SlugRouteParams): Promise<Metadata> {
   try {
     const slug = await resolveRouteSlug(params);
-    const service = await publicApi.getService(slug);
+    const service = await getPublishedServiceBySlug(slug);
+    if (!service) throw new Error('not found');
     return pageSeo({
       title: service.detailPage?.seoTitle || service.title,
       description: service.detailPage?.seoDescription || service.shortDescription,
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: SlugRouteParams): Promise<Met
 export default async function ServiceDetailPage({ params }: SlugRouteParams) {
   const slug = await resolveRouteSlug(params);
   const [service, siteData] = await Promise.all([
-    publicApi.getService(slug).catch(() => null),
+    getPublishedServiceBySlug(slug),
     loadPublicSiteData(),
   ]);
 
