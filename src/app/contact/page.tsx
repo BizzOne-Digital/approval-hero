@@ -4,8 +4,8 @@ import { Footer } from '@/components/layout/Footer';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { LeadForm } from '@/components/forms/LeadForm';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
-import { publicApi } from '@/lib/api';
 import { getPublishedPageBySlug } from '@/lib/cms/pages';
+import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import { resolveSiteEmail } from '@/lib/siteEmail';
 import type { Metadata } from 'next';
 import { Mail, MapPin, Clock } from 'lucide-react';
@@ -13,25 +13,13 @@ import { Mail, MapPin, Clock } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-async function getSiteData() {
-  try {
-    const [settings, navData] = await Promise.all([
-      publicApi.getSettings(),
-      publicApi.getNavigation(),
-    ]);
-    return { settings, navItems: navData.navigation?.headerItems || [], footerColumns: navData.navigation?.footerColumns || [] };
-  } catch {
-    return { settings: undefined, navItems: [], footerColumns: [] };
-  }
-}
-
 export const metadata: Metadata = {
   title: 'Contact & Apply',
   description: 'Contact Approval Hero or start your vehicle financing application today.',
 };
 
 export default async function ContactPage() {
-  const [page, siteData] = await Promise.all([getPublishedPageBySlug('contact'), getSiteData()]);
+  const [page, siteData] = await Promise.all([getPublishedPageBySlug('contact'), loadPublicSiteData()]);
 
   const general = siteData.settings?.general;
   const cmsSections = page

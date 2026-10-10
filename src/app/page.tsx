@@ -2,35 +2,13 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { HomeHero } from '@/components/sections/HomeHero';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
-import { publicApi } from '@/lib/api';
 import { getPublishedPageBySlug } from '@/lib/cms/pages';
+import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import type { Metadata } from 'next';
 import { pageSeo } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-
-async function getSiteData() {
-  try {
-    const [settings, navData, services, testimonials, faqData] = await Promise.all([
-      publicApi.getSettings(),
-      publicApi.getNavigation(),
-      publicApi.getServices(),
-      publicApi.getTestimonials(),
-      publicApi.getFaqs(),
-    ]);
-    return {
-      settings,
-      navItems: navData.navigation?.headerItems || [],
-      footerColumns: navData.navigation?.footerColumns || [],
-      services,
-      testimonials,
-      faqs: faqData.faqs,
-    };
-  } catch {
-    return { settings: undefined, navItems: [], footerColumns: [], services: [], testimonials: [], faqs: [] };
-  }
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -49,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   const page = await getPublishedPageBySlug('home');
 
-  const siteData = await getSiteData();
+  const siteData = await loadPublicSiteData();
   const sections = page
     ? [...page.sections].filter((s) => s.sectionType !== 'hero').sort((a, b) => a.order - b.order)
     : [];

@@ -4,20 +4,12 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { publicApi } from '@/lib/api';
+import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import { SectionSideImage } from '@/components/sections/SectionSideImage';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { pageSeo } from '@/lib/seo';
 import { CheckCircle } from 'lucide-react';
-
-async function getSiteData() {
-  try {
-    const [settings, navData] = await Promise.all([publicApi.getSettings(), publicApi.getNavigation()]);
-    return { settings, navItems: navData.navigation?.headerItems || [], footerColumns: navData.navigation?.footerColumns || [] };
-  } catch {
-    return { settings: undefined, navItems: [], footerColumns: [] };
-  }
-}
 
 import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
 
@@ -39,7 +31,7 @@ export default async function ServiceDetailPage({ params }: SlugRouteParams) {
   const slug = await resolveRouteSlug(params);
   const [service, siteData] = await Promise.all([
     publicApi.getService(slug).catch(() => null),
-    getSiteData(),
+    loadPublicSiteData(),
   ]);
 
   if (!service) {

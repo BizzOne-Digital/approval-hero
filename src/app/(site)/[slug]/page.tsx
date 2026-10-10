@@ -3,34 +3,13 @@ import { Footer } from '@/components/layout/Footer';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { publicApi } from '@/lib/api';
 import { getPublishedPageBySlug } from '@/lib/cms/pages';
+import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import type { GalleryImage } from '@/lib/types';
 import type { Metadata } from 'next';
 import { pageSeo } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-
-async function getSiteData() {
-  try {
-    const [settings, navData, services, testimonials, faqData] = await Promise.all([
-      publicApi.getSettings(),
-      publicApi.getNavigation(),
-      publicApi.getServices(),
-      publicApi.getTestimonials(),
-      publicApi.getFaqs(),
-    ]);
-    return {
-      settings,
-      navItems: navData.navigation?.headerItems || [],
-      footerColumns: navData.navigation?.footerColumns || [],
-      services,
-      testimonials,
-      faqs: faqData.faqs,
-    };
-  } catch {
-    return { settings: undefined, navItems: [], footerColumns: [], services: [], testimonials: [], faqs: [] };
-  }
-}
 
 async function getGalleryImages(): Promise<GalleryImage[]> {
   try {
@@ -59,7 +38,7 @@ export default async function CmsPage({ params }: SlugRouteParams) {
   const needsGallery = slug === 'gallery';
   const [page, siteData, galleryImages] = await Promise.all([
     getPublishedPageBySlug(slug),
-    getSiteData(),
+    loadPublicSiteData(),
     needsGallery ? getGalleryImages() : Promise.resolve([]),
   ]);
 

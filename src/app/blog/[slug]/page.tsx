@@ -3,18 +3,10 @@ import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { publicApi } from '@/lib/api';
+import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { pageSeo } from '@/lib/seo';
-
-async function getSiteData() {
-  try {
-    const [settings, navData] = await Promise.all([publicApi.getSettings(), publicApi.getNavigation()]);
-    return { settings, navItems: navData.navigation?.headerItems || [], footerColumns: navData.navigation?.footerColumns || [] };
-  } catch {
-    return { settings: undefined, navItems: [], footerColumns: [] };
-  }
-}
 
 import { resolveRouteSlug, type SlugRouteParams } from '@/lib/api/routeParams';
 
@@ -36,7 +28,7 @@ export default async function BlogDetailPage({ params }: SlugRouteParams) {
   const slug = await resolveRouteSlug(params);
   const [blogData, siteData] = await Promise.all([
     publicApi.getBlog(slug).catch(() => null),
-    getSiteData(),
+    loadPublicSiteData(),
   ]);
 
   if (!blogData) {

@@ -42,5 +42,8 @@ const FAQSchema = new Schema<IFAQ>(
   { timestamps: true }
 );
 
-export const FAQCategory = mongoose.model<IFAQCategory>('FAQCategory', FAQCategorySchema);
-export const FAQ = mongoose.model<IFAQ>('FAQ', FAQSchema);
+export const FAQCategory =
+  (mongoose.models.FAQCategory as mongoose.Model<IFAQCategory>) ||
+  mongoose.model<IFAQCategory>('FAQCategory', FAQCategorySchema);
+export const FAQ =
+  (mongoose.models.FAQ as mongoose.Model<IFAQ>) || mongoose.model<IFAQ>('FAQ', FAQSchema);

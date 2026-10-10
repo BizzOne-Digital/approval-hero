@@ -86,5 +86,9 @@ const BlogPostSchema = new Schema<IBlogPost>(
 
 BlogPostSchema.index({ status: 1, publishedAt: -1 });
 
-export const BlogCategory = mongoose.model<IBlogCategory>('BlogCategory', BlogCategorySchema);
-export const BlogPost = mongoose.model<IBlogPost>('BlogPost', BlogPostSchema);
+export const BlogCategory =
+  (mongoose.models.BlogCategory as mongoose.Model<IBlogCategory>) ||
+  mongoose.model<IBlogCategory>('BlogCategory', BlogCategorySchema);
+export const BlogPost =
+  (mongoose.models.BlogPost as mongoose.Model<IBlogPost>) ||
+  mongoose.model<IBlogPost>('BlogPost', BlogPostSchema);

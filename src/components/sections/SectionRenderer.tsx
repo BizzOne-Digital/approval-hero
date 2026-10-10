@@ -616,21 +616,27 @@ function FaqPreview({ section, faqs }: { section: PageSection; faqs?: FAQ[] }) {
           <h2 className="font-display text-3xl md:text-5xl font-bold text-midnight mb-4">{section.heading}</h2>
         </AnimateOnScroll>
         <div className="max-w-3xl mx-auto space-y-4">
-          {items.map((faq, i) => (
-            <AnimateOnScroll key={faq._id} delay={i * 0.05}>
-              <details className="group bg-white rounded-lg border border-ice-blue overflow-hidden">
-                <summary className="flex items-center justify-between p-6 cursor-pointer font-display font-semibold text-midnight hover:text-electric transition-colors">
-                  {faq.question}
-                  <ChevronRight className="w-5 h-5 transition-transform group-open:rotate-90" />
-                </summary>
-                <div className="px-6 pb-6 text-gray-600 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: faq.answer }} />
-              </details>
-            </AnimateOnScroll>
-          ))}
+          {items.length === 0 ? (
+            <p className="text-gray-500 text-center">FAQs coming soon.</p>
+          ) : (
+            items.map((faq, i) => (
+              <AnimateOnScroll key={faq._id} delay={i * 0.05}>
+                <details className="group bg-white rounded-lg border border-ice-blue overflow-hidden">
+                  <summary className="flex items-center justify-between p-6 cursor-pointer font-display font-semibold text-midnight hover:text-electric transition-colors">
+                    {faq.question}
+                    <ChevronRight className="w-5 h-5 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-6 pb-6 text-gray-600 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                </details>
+              </AnimateOnScroll>
+            ))
+          )}
         </div>
-        <div className="text-center mt-8">
-          <Link href="/testimonials-faqs" className="btn-outline">View All FAQs</Link>
-        </div>
+        {!showAll && items.length > 0 && (
+          <div className="text-center mt-8">
+            <Link href="/testimonials-faqs#faq" className="btn-outline">View All FAQs</Link>
+          </div>
+        )}
       </div>
     </section>
   );

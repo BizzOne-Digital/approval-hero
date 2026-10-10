@@ -4,17 +4,9 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { BlogPostCard } from '@/components/blog/BlogPostCard';
 import { publicApi } from '@/lib/api';
+import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
-
-async function getSiteData() {
-  try {
-    const [settings, navData] = await Promise.all([publicApi.getSettings(), publicApi.getNavigation()]);
-    return { settings, navItems: navData.navigation?.headerItems || [], footerColumns: navData.navigation?.footerColumns || [] };
-  } catch {
-    return { settings: undefined, navItems: [], footerColumns: [] };
-  }
-}
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -24,7 +16,7 @@ export const metadata: Metadata = {
 export default async function BlogPage() {
   const [blogData, siteData] = await Promise.all([
     publicApi.getBlogs().catch(() => ({ posts: [], categories: [], featured: null })),
-    getSiteData(),
+    loadPublicSiteData(),
   ]);
 
   const { posts, featured } = blogData;

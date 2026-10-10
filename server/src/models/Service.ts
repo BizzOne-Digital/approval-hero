@@ -114,4 +114,5 @@ const ServiceSchema = new Schema<IService>(
 
 ServiceSchema.index({ status: 1, order: 1 });
 
-export const Service = mongoose.model<IService>('Service', ServiceSchema);
+export const Service =
+  (mongoose.models.Service as mongoose.Model<IService>) || mongoose.model<IService>('Service', ServiceSchema);
