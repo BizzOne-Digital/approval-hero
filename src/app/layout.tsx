@@ -23,6 +23,11 @@ export const metadata = {
     template: '%s | Approval Hero',
   },
   description: 'Approval Hero connects customers with dealer and lending partners who understand challenging credit situations.',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+  },
   icons: {
     icon: [{ url: '/images/favicon.png', type: 'image/png' }],
     apple: [{ url: '/images/favicon.png', type: 'image/png' }],

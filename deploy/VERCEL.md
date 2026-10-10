@@ -37,7 +37,20 @@ Go to **Vercel → Project → Settings → Environment Variables**
 
 Vercel → **Deployments** → latest → **⋯** → **Redeploy**
 
-### 4. Test
+### 4. SEO — robots.txt & sitemap.xml
+
+After deploy, these URLs must return **200** (use **www**):
+
+| URL | Expected |
+|-----|----------|
+| `https://www.approvalhero.ca/robots.txt` | `Sitemap: https://www.approvalhero.ca/sitemap.xml` and `Allow: /` |
+| `https://www.approvalhero.ca/sitemap.xml` | XML list of pages; every `<loc>` must be `https://www.approvalhero.ca/...` |
+
+**Google Search Console (client):** add property `https://www.approvalhero.ca` → **Sitemaps** → submit `https://www.approvalhero.ca/sitemap.xml`. Indexing can take several days after submission.
+
+Set `NEXT_PUBLIC_SITE_URL=https://www.approvalhero.ca` so sitemap/robots never use `*.vercel.app`.
+
+### 5. Test
 
 | URL | Should show |
 |-----|-------------|
