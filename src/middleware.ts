@@ -10,7 +10,13 @@ export function middleware(request: NextRequest) {
     url.host = 'www.approvalhero.ca';
     return NextResponse.redirect(url, 308);
   }
-  return NextResponse.next();
+
+  const response = NextResponse.next();
+  // Keep Google on the custom domain — do not index *.vercel.app deployment URLs.
+  if (host && /\.vercel\.app$/i.test(host)) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  }
+  return response;
 }
 
 export const config = {
