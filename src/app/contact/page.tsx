@@ -9,14 +9,16 @@ import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import { resolveSiteEmail } from '@/lib/siteEmail';
 import type { Metadata } from 'next';
 import { Mail, MapPin, Clock } from 'lucide-react';
+import { pageSeo } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageSeo({
   title: 'Contact & Apply',
   description: 'Contact Approval Hero or start your vehicle financing application today.',
-};
+  path: '/contact',
+});
 
 export default async function ContactPage() {
   const [page, siteData] = await Promise.all([getPublishedPageBySlug('contact'), loadPublicSiteData()]);

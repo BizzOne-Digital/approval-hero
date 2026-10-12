@@ -21,7 +21,6 @@ function pagePath(slug: string): string {
 const FALLBACK_SLUGS = [
   'home',
   'about',
-  'apply',
   'services',
   'approval-programs',
   'how-it-works',

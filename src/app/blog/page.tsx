@@ -7,11 +7,13 @@ import { getPublishedBlogListing } from '@/lib/cms/blog';
 import { loadPublicSiteData } from '@/lib/cms/siteContent';
 import { getImageUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
+import { pageSeo } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageSeo({
   title: 'Blog',
   description: 'Vehicle financing resources and guides from Approval Hero.',
-};
+  path: '/blog',
+});
 
 export default async function BlogPage() {
   const [blogData, siteData] = await Promise.all([getPublishedBlogListing(), loadPublicSiteData()]);
