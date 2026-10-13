@@ -13,7 +13,10 @@ export default function robots(): MetadataRoute.Robots {
     };
   }
 
-  const base = getSiteBaseUrl();
+  const hostHeader = headers().get('host');
+  const base = getSiteBaseUrl(
+    hostHeader ? new Request(`https://${hostHeader.split(':')[0]}`) : undefined,
+  );
   return {
     rules: {
       userAgent: '*',

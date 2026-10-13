@@ -39,6 +39,11 @@ const FALLBACK_SLUGS = [
   'blog',
 ];
 
+/** Always returns 200-safe URLs for crawlers when MongoDB is unavailable. */
+export function getFallbackSitemapEntries(baseUrl: string): MetadataRoute.Sitemap {
+  return buildFallbackSitemap(baseUrl);
+}
+
 function buildFallbackSitemap(baseUrl: string): MetadataRoute.Sitemap {
   const seen = new Set<string>();
   const entries: SitemapEntry[] = [];
@@ -62,7 +67,7 @@ export async function buildSitemapEntries(request?: Request): Promise<MetadataRo
   const baseUrl = getSiteBaseUrl(request);
 
   if (!hasMongoUri()) {
-    return buildFallbackSitemap(baseUrl);
+    return enforceProductionSitemapUrls(buildFallbackSitemap(baseUrl), request);
   }
 
   const seen = new Set<string>();
@@ -118,9 +123,28 @@ export async function buildSitemapEntries(request?: Request): Promise<MetadataRo
       add(`/blog/${slug}`, modified, 0.6, 'monthly');
     }
   } catch {
-    return buildFallbackSitemap(baseUrl);
+    return enforceProductionSitemapUrls(buildFallbackSitemap(baseUrl), request);
   }
 
   entries.sort((a, b) => a.url.localeCompare(b.url));
-  return entries;
+  return enforceProductionSitemapUrls(entries, request);
+}
+
+/** Force https://www.approvalhero.ca — never emit Vercel or wrong-host URLs to Google. */
+export function enforceProductionSitemapUrls(
+  entries: MetadataRoute.Sitemap,
+  request?: Request,
+): MetadataRoute.Sitemap {
+  const base = getSiteBaseUrl(request).replace(/\/$/, '');
+  return entries.map((item) => {
+    try {
+      const parsed = new URL(item.url);
+      const path = parsed.pathname || '/';
+      const search = parsed.search || '';
+      const url = path === '/' ? `${base}/` : `${base}${path}${search}`;
+      return { ...item, url };
+    } catch {
+      return item;
+    }
+  });
 }
