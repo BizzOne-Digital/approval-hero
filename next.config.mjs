@@ -20,14 +20,20 @@ const nextConfig = {
         destination: '/testimonials-faqs#faq',
         permanent: true,
       },
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'approvalhero.ca' }],
-        destination: 'https://www.approvalhero.ca/:path*',
-        statusCode: 308,
-      },
-    ];
-  },
+          {
+      source: '/:path*',
+      has: [{ type: 'host', value: 'approvalhero.ca' }],
+      destination: 'https://www.approvalhero.ca/:path*',
+      statusCode: 308,
+    },
+    {
+      source: '/:path*',
+      has: [{ type: 'host', value: 'approval-hero-nb2m.vercel.app' }],
+      destination: 'https://www.approvalhero.ca/:path*',
+      statusCode: 308,
+    },
+  ];
+},
   async headers() {
     return [
       {
